@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
-app.use(express.json());
+const route = require('./router');
+
+app.use("/book", route);
 
 const books = [
   { title: "Harry Potter", id: 1 , author : "J.K. Rowling"},
