@@ -25,6 +25,7 @@ let User = class User extends typeorm_1.BaseEntity {
         this.password = bcryptjs_1.default.hashSync(this.password);
     }
     validatenonhashpassword(password) {
+        //return bcrypt.compare(password,this.password);
         return bcryptjs_1.default.compareSync(password, this.password);
     }
 };

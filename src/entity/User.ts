@@ -9,7 +9,6 @@ import {
 import bcrypt from "bcryptjs";
 
 
-
 export enum RoleEnumType {
     USER = 'user',
     ADMIN = 'admin',
@@ -18,48 +17,48 @@ export enum RoleEnumType {
   @Entity()
   export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
-    id!: number;
+    id: number;
   
     @Column({
       nullable : true
     })
-    firstname!: string;
+    firstname: string;
   
     @Column({
       nullable : true
     })
-    lastname!: string;
+    lastname: string;
   
     @Column({
       nullable : true
     })
-    gender!: string;
+    gender: string;
   
     @Column({
       nullable : true
     })
-    phone!: string;
+    phone: string;
   
     @Column({
       unique: true,
       nullable : true
     })
-    email!: string;
+    email: string;
   
     @Column({
       nullable : true
     })
-    password!: string;
+    password: string;
   
     @Column()
-    address! : string;
+    address : string;
   
     @Column({
       type: 'enum',
       enum: RoleEnumType,
       default: RoleEnumType.USER,
     })
-    role!: RoleEnumType.USER;
+    role: RoleEnumType.USER;
   
     @CreateDateColumn()
     createdAt: Date;
@@ -72,7 +71,8 @@ export enum RoleEnumType {
     }
   
     validatenonhashpassword(password : string){
-        return bcrypt.compareSync(password,this.password);
+        //return bcrypt.compare(password,this.password);
+       return bcrypt.compareSync(password,this.password);
     }
   
   }

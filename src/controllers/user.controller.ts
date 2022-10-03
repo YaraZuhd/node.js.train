@@ -1,11 +1,29 @@
 import { Request, Response } from "express";
-import { User } from "../entity/User";
-
+import { RoleEnumType, User } from "../entity/User";
+import * as jwt from "jsonwebtoken";
+import jwtSecret from "../secretkey"
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find();
-    return res.json(users);
+    const token = <string>req.headers['authorization']?.replace("Bearer ","")
+    let jwtPayload;
+    //Try to validate the token and get data
+    try {
+      jwtPayload = <any>jwt.verify(token, jwtSecret.jwtSecret);
+      console.log(jwtPayload);
+      const user =  await User.findOneBy({ id: parseInt(jwtPayload.id) });
+      console.log(user);
+      if(user != null){
+         if(user.role != RoleEnumType.USER){
+          return res.json(users);
+         }
+      }
+    } catch (error) {
+      //If token is not valid, respond with 401 (unauthorized)
+      res.status(401).send({message : "Hi"});
+      return;
+    }
   } catch (error) {
     if (error instanceof Error) {
       return res.status(500).json({ message: error.message });
@@ -35,6 +53,7 @@ export const createUser = async (
   const firstname = req.body.firstname;
   const lastname = req.body.lastname;
   const gender = req.body.gender;
+  const phone = req.body.phone;
   const email = req.body.email;
   const password = req.body.password;
   const address = req.body.address;
@@ -43,6 +62,7 @@ export const createUser = async (
   user.firstname = firstname;
   user.lastname = lastname;
   user.gender = gender;
+  user.phone = phone;
   user.email = email;
   user.password = password;
   user.hashpassword();
