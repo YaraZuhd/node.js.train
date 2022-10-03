@@ -8,22 +8,23 @@ export const getUsers = async (req: Request, res: Response) => {
     const users = await User.find();
     const token = <string>req.headers['authorization']?.replace("Bearer ","")
     let jwtPayload;
+    return res.json(users);
     //Try to validate the token and get data
-    try {
-      jwtPayload = <any>jwt.verify(token, jwtSecret.jwtSecret);
-      console.log(jwtPayload);
-      const user =  await User.findOneBy({ id: parseInt(jwtPayload.id) });
-      console.log(user);
-      if(user != null){
-         if(user.role != RoleEnumType.USER){
-          return res.json(users);
-         }
-      }
-    } catch (error) {
-      //If token is not valid, respond with 401 (unauthorized)
-      res.status(401).send({message : "Hi"});
-      return;
-    }
+    // try {
+    //   jwtPayload = <any>jwt.verify(token, jwtSecret.jwtSecret);
+    //   console.log(jwtPayload);
+    //   const user =  await User.findOneBy({ id: parseInt(jwtPayload.id) });
+    //   console.log(user);
+    //   if(user != null){
+    //      if(user.role != RoleEnumType.USER){
+    //       return res.json(users);
+    //      }
+    //   }
+    // } catch (error) {
+    //   //If token is not valid, respond with 401 (unauthorized)
+    //   res.status(401).send({message : "Hi"});
+    //   return;
+    // }
   } catch (error) {
     if (error instanceof Error) {
       return res.status(500).json({ message: error.message });
