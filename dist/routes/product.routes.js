@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const product_controller_1 = require("../controllers/product.controller");
+const checkJwt_1 = require("../middlewares/checkJwt");
+const checkRole_1 = require("../middlewares/checkRole");
+const router = (0, express_1.Router)();
+router.get("/products", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], product_controller_1.getProducts);
+router.get("/product/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], product_controller_1.getProduct);
+router.post("/product", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin"])], product_controller_1.createProduct);
+router.put("/product/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin"])], product_controller_1.updateProduct);
+router.delete("/product/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin"])], product_controller_1.deleteProduct);
+exports.default = router;

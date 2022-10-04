@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { User } from "../entity/User";
-import userDetail  from "../schemas/schemas";
+import userDetail  from "../schemas/userSchema";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {

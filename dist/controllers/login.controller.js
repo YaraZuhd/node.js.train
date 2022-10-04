@@ -40,7 +40,7 @@ const User_1 = require("../entity/User");
 const jwt = __importStar(require("jsonwebtoken"));
 const secretkey_1 = __importDefault(require("../secretkey"));
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //Check if username and password are set
+    //Check if email and password are set
     let { email, password } = req.body;
     if (!(email && password)) {
         res.status(400).send();

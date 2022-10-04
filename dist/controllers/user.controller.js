@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCurrentUser = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUser = exports.getUsers = void 0;
 const User_1 = require("../entity/User");
-const schemas_1 = __importDefault(require("../schemas/schemas"));
+const userSchema_1 = __importDefault(require("../schemas/userSchema"));
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield User_1.User.find();
@@ -55,7 +55,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         user.hashpassword();
         user.address = req.body.address;
         user.role = req.body.role || "user";
-        const validate = schemas_1.default.validate(user);
+        const validate = userSchema_1.default.validate(user);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
             yield user.save();
             return res.json(user);
@@ -78,7 +78,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const user = yield User_1.User.findOneBy({ id: parseInt(id) });
         if (!user)
             return res.status(404).json({ message: "User not found" });
-        const validate = schemas_1.default.validate(req.body);
+        const validate = userSchema_1.default.validate(req.body);
         if (!((_b = validate.error) === null || _b === void 0 ? void 0 : _b.message)) {
             yield User_1.User.update({ id: parseInt(id) }, req.body);
             return res.sendStatus(204);

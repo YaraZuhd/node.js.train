@@ -15,10 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-// export enum RoleEnumType {
-//     USER = 'user',
-//     ADMIN = 'admin',
-// }
 let User = class User extends typeorm_1.BaseEntity {
     hashpassword() {
         this.password = bcryptjs_1.default.hashSync(this.password);
@@ -75,8 +71,6 @@ __decorate([
 ], User.prototype, "address", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        //type: 'enum',
-        //enum: RoleEnumType,
         default: "user",
     }),
     __metadata("design:type", String)
