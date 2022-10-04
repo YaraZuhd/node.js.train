@@ -4,7 +4,7 @@ import * as jwt from "jsonwebtoken";
 import jwtSecret from "../secretkey"
 
 export const loginUser = async (req: Request, res: Response) => {
-   //Check if username and password are set
+   //Check if email and password are set
    let { email, password } = req.body;
    if (!(email && password)) {
      res.status(400).send();

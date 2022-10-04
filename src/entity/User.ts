@@ -7,12 +7,6 @@ import {
     UpdateDateColumn,
   } from "typeorm";
 import bcrypt from "bcryptjs";
-
-
-// export enum RoleEnumType {
-//     USER = 'user',
-//     ADMIN = 'admin',
-// }
   
   @Entity()
   export class User extends BaseEntity {
@@ -54,8 +48,6 @@ import bcrypt from "bcryptjs";
     address : string;
   
     @Column({
-      //type: 'enum',
-      //enum: RoleEnumType,
       default: "user",
     })
     role: string;
