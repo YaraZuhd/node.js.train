@@ -12,14 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = exports.RoleEnumType = void 0;
+exports.User = void 0;
 const typeorm_1 = require("typeorm");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-var RoleEnumType;
-(function (RoleEnumType) {
-    RoleEnumType["USER"] = "user";
-    RoleEnumType["ADMIN"] = "admin";
-})(RoleEnumType = exports.RoleEnumType || (exports.RoleEnumType = {}));
+// export enum RoleEnumType {
+//     USER = 'user',
+//     ADMIN = 'admin',
+// }
 let User = class User extends typeorm_1.BaseEntity {
     hashpassword() {
         this.password = bcryptjs_1.default.hashSync(this.password);
@@ -76,9 +75,9 @@ __decorate([
 ], User.prototype, "address", void 0);
 __decorate([
     (0, typeorm_1.Column)({
-        type: 'enum',
-        enum: RoleEnumType,
-        default: RoleEnumType.USER,
+        //type: 'enum',
+        //enum: RoleEnumType,
+        default: "user",
     }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);

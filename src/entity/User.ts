@@ -9,10 +9,10 @@ import {
 import bcrypt from "bcryptjs";
 
 
-export enum RoleEnumType {
-    USER = 'user',
-    ADMIN = 'admin',
-}
+// export enum RoleEnumType {
+//     USER = 'user',
+//     ADMIN = 'admin',
+// }
   
   @Entity()
   export class User extends BaseEntity {
@@ -54,11 +54,11 @@ export enum RoleEnumType {
     address : string;
   
     @Column({
-      type: 'enum',
-      enum: RoleEnumType,
-      default: RoleEnumType.USER,
+      //type: 'enum',
+      //enum: RoleEnumType,
+      default: "user",
     })
-    role: RoleEnumType.USER;
+    role: string;
   
     @CreateDateColumn()
     createdAt: Date;

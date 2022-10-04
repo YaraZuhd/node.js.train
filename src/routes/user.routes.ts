@@ -5,18 +5,23 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  getCurrentUser
 } from "../controllers/user.controller";
+import { checkJwt } from "../middlewares/checkJwt";
+import { checkRole } from "../middlewares/checkRole";
 
 const router = Router();
 
-router.get("/users", getUsers);
+router.get("/users", [checkJwt, checkRole(["admin"])],getUsers);
 
-router.get("/user/:id", getUser);
+router.get("/user/:id",[checkJwt, checkRole(["admin"])], getUser);
 
-router.post("/user", createUser);
+router.get("/me",[checkJwt], getCurrentUser);
 
-router.put("/user/:id", updateUser);
+router.post("/user", [checkJwt, checkRole(["admin"])], createUser);
 
-router.delete("/user/:id", deleteUser);
+router.put("/user/:id",[checkJwt, checkRole(["admin"])], updateUser);
+
+router.delete("/user/:id",[checkJwt, checkRole(["admin"])], deleteUser);
 
 export default router;
