@@ -8,9 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCurrentUser = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUser = exports.getUsers = void 0;
 const User_1 = require("../entity/User");
+const schemas_1 = __importDefault(require("../schemas/schemas"));
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield User_1.User.find();
@@ -39,27 +43,26 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getUser = getUser;
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        const firstname = req.body.firstname;
-        const lastname = req.body.lastname;
-        const gender = req.body.gender;
-        const phone = req.body.phone;
-        const email = req.body.email;
-        const password = req.body.password;
-        const address = req.body.address;
-        const role = req.body.role || "user";
         const user = new User_1.User();
-        user.firstname = firstname;
-        user.lastname = lastname;
-        user.gender = gender;
-        user.phone = phone;
-        user.email = email;
-        user.password = password;
+        user.firstname = req.body.firstname;
+        user.lastname = req.body.lastname;
+        user.gender = req.body.gender;
+        user.phone = req.body.phone;
+        user.email = req.body.email;
+        user.password = req.body.password;
         user.hashpassword();
-        user.address = address;
-        user.role = role;
-        yield user.save();
-        return res.json(user);
+        user.address = req.body.address;
+        user.role = req.body.role || "user";
+        const validate = schemas_1.default.validate(user);
+        if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
+            yield user.save();
+            return res.json(user);
+        }
+        else {
+            return res.json({ message: validate.error.message });
+        }
     }
     catch (error) {
         if (error instanceof Error) {
@@ -69,13 +72,20 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.createUser = createUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
     const { id } = req.params;
     try {
         const user = yield User_1.User.findOneBy({ id: parseInt(id) });
         if (!user)
             return res.status(404).json({ message: "User not found" });
-        yield User_1.User.update({ id: parseInt(id) }, req.body);
-        return res.sendStatus(204);
+        const validate = schemas_1.default.validate(req.body);
+        if (!((_b = validate.error) === null || _b === void 0 ? void 0 : _b.message)) {
+            yield User_1.User.update({ id: parseInt(id) }, req.body);
+            return res.sendStatus(204);
+        }
+        else {
+            return res.json({ message: validate.error.message });
+        }
     }
     catch (error) {
         if (error instanceof Error) {

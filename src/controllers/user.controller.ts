@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { User } from "../entity/User";
+import userDetail  from "../schemas/schemas";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -32,26 +33,23 @@ export const createUser = async (
   res: Response
 ) => {
   try{
-    const firstname = req.body.firstname;
-    const lastname = req.body.lastname;
-    const gender = req.body.gender;
-    const phone = req.body.phone;
-    const email = req.body.email;
-    const password = req.body.password;
-    const address = req.body.address;
-    const role = req.body.role || "user";
     const user = new User();
-    user.firstname = firstname;
-    user.lastname = lastname;
-    user.gender = gender;
-    user.phone = phone;
-    user.email = email;
-    user.password = password;
+    user.firstname = req.body.firstname;
+    user.lastname = req.body.lastname;
+    user.gender = req.body.gender;
+    user.phone = req.body.phone;
+    user.email = req.body.email;
+    user.password = req.body.password;
     user.hashpassword();
-    user.address = address;
-    user.role = role;
-    await user.save();
-    return res.json(user);
+    user.address = req.body.address;
+    user.role = req.body.role || "user";
+    const validate = userDetail.validate(user);
+    if(!validate.error?.message){
+      await user.save();
+      return res.json(user);
+    }else{
+      return res.json({message : validate.error.message})
+    }
   }catch(error){
     if (error instanceof Error) {
       return res.status(500).json({ message: error.message });
@@ -65,10 +63,13 @@ export const updateUser = async (req: Request, res: Response) => {
   try {
     const user = await User.findOneBy({ id: parseInt(id) });
     if (!user) return res.status(404).json({ message: "User not found" });
-
-    await User.update({ id: parseInt(id) }, req.body);
-
-    return res.sendStatus(204);
+    const validate = userDetail.validate(req.body);
+    if(!validate.error?.message){
+      await User.update({ id: parseInt(id) }, req.body);
+      return res.sendStatus(204);
+    }else{
+      return res.json({message : validate.error.message})
+    }       
   } catch (error) {
     if (error instanceof Error) {
       return res.status(500).json({ message: error.message });
