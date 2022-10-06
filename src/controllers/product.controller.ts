@@ -1,11 +1,12 @@
-import { Request, Response } from "express";
+import { Request, Response  } from "express";
+import { AppDataSource } from "../db";
 import { Product } from "../entity/Product";
 import productSchema from "../schemas/productSchema";
-import userDetail  from "../schemas/userSchema";
+const userRepository = AppDataSource.getRepository(Product);
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
-    const product = await Product.find();
+    const product = await Product.find({relations : ['categories']});    
     return res.json(product);
   } catch (error) {
     if (error instanceof Error) {
@@ -17,7 +18,7 @@ export const getProducts = async (req: Request, res: Response) => {
 export const getProduct = async (req: Request, res: Response) => {
   try {
     const { id } =  req.params;
-    const product = await Product.findOneBy({ id: parseInt(id) });
+    const product = await Product.findOne({ where : {id : parseInt(id)}, relations : ['categories']});
 
     if (!product) return res.status(404).json({ message: "Product not found" });
 
@@ -38,6 +39,7 @@ export const createProduct = async (
     product.name = req.body.name;
     product.price = parseInt(req.body.price);
     product.desription = req.body.desription;
+    product.categories = req.body.categories;
     const validate = productSchema.validate(product);
     if(!validate.error?.message){
       await product.save();
