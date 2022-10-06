@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCurrentUser = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUser = exports.getUsers = void 0;
+const Cart_1 = require("../entity/Cart");
 const User_1 = require("../entity/User");
 const userSchema_1 = __importDefault(require("../schemas/userSchema"));
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -30,7 +31,7 @@ exports.getUsers = getUsers;
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const user = yield User_1.User.findOneBy({ id: parseInt(id) });
+        const user = yield User_1.User.findOne({ where: { id: parseInt(id) } });
         if (!user)
             return res.status(404).json({ message: "User not found" });
         return res.json(user);
@@ -55,6 +56,8 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         user.hashpassword();
         user.address = req.body.address;
         user.role = req.body.role || "user";
+        const cart = new Cart_1.Cart();
+        yield cart.save();
         const validate = userSchema_1.default.validate(user);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
             yield user.save();

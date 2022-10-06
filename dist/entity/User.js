@@ -15,12 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const Cart_1 = require("./Cart");
 let User = class User extends typeorm_1.BaseEntity {
     hashpassword() {
         this.password = bcryptjs_1.default.hashSync(this.password);
     }
     validatenonhashpassword(password) {
-        //return bcrypt.compare(password,this.password);
         return bcryptjs_1.default.compareSync(password, this.password);
     }
 };
@@ -83,6 +83,11 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], User.prototype, "updatedAt", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => Cart_1.Cart, (cart) => cart.user),
+    (0, typeorm_1.JoinColumn)(),
+    __metadata("design:type", Cart_1.Cart)
+], User.prototype, "cart", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

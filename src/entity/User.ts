@@ -5,8 +5,11 @@ import {
     BaseEntity,
     CreateDateColumn,
     UpdateDateColumn,
+    JoinColumn,
+    OneToOne,
   } from "typeorm";
 import bcrypt from "bcryptjs";
+import { Cart } from "./Cart";
   
   @Entity()
   export class User extends BaseEntity {
@@ -58,12 +61,15 @@ import bcrypt from "bcryptjs";
     @UpdateDateColumn()
     updatedAt: Date;
 
+    @OneToOne(() => Cart , (cart: Cart) => cart.user)
+    @JoinColumn()
+    public cart: Cart;
+
     hashpassword(){
         this.password = bcrypt.hashSync(this.password);
     }
   
     validatenonhashpassword(password : string){
-        //return bcrypt.compare(password,this.password);
        return bcrypt.compareSync(password,this.password);
     }
   

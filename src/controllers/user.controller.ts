@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Cart } from "../entity/Cart";
 import { User } from "../entity/User";
 import userDetail  from "../schemas/userSchema";
 
@@ -16,7 +17,7 @@ export const getUsers = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
   try {
     const { id } =  req.params;
-    const user = await User.findOneBy({ id: parseInt(id) });
+    const user = await User.findOne({ where : {id : parseInt(id)}});
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
@@ -43,6 +44,8 @@ export const createUser = async (
     user.hashpassword();
     user.address = req.body.address;
     user.role = req.body.role || "user";
+    const cart = new Cart();
+    await cart.save();
     const validate = userDetail.validate(user);
     if(!validate.error?.message){
       await user.save();

@@ -12,13 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProduct = exports.getProducts = void 0;
-const Product_1 = require("../entity/Product");
-const productSchema_1 = __importDefault(require("../schemas/productSchema"));
-const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.deleteOrder = exports.updateOrder = exports.createOrder = exports.getOrder = exports.getOrders = void 0;
+const Order_1 = require("../entity/Order");
+const orderSchema_1 = __importDefault(require("../schemas/orderSchema"));
+const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const product = yield Product_1.Product.find({ relations: ['categories'] });
-        return res.json(product);
+        const order = yield Order_1.Order.find();
+        return res.json(order);
     }
     catch (error) {
         if (error instanceof Error) {
@@ -26,14 +26,14 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
 });
-exports.getProducts = getProducts;
-const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getOrders = getOrders;
+const getOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const product = yield Product_1.Product.findOne({ where: { id: parseInt(id) }, relations: ['categories'] });
-        if (!product)
-            return res.status(404).json({ message: "Product not found" });
-        return res.json(product);
+        const order = yield Order_1.Order.findOneBy({ id: parseInt(id) });
+        if (!order)
+            return res.status(404).json({ message: "Order not found" });
+        return res.json(order);
     }
     catch (error) {
         if (error instanceof Error) {
@@ -41,19 +41,15 @@ const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
     }
 });
-exports.getProduct = getProduct;
-const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getOrder = getOrder;
+const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        const product = new Product_1.Product();
-        product.name = req.body.name;
-        product.price = parseInt(req.body.price);
-        product.desription = req.body.desription;
-        product.categories = req.body.categories;
-        const validate = productSchema_1.default.validate(product);
+        const order = new Order_1.Order();
+        const validate = orderSchema_1.default.validate(order);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
-            yield product.save();
-            return res.json(product);
+            yield order.save();
+            return res.json(order);
         }
         else {
             return res.json({ message: validate.error.message });
@@ -65,17 +61,17 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
 });
-exports.createProduct = createProduct;
-const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.createOrder = createOrder;
+const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     const { id } = req.params;
     try {
-        const product = yield Product_1.Product.findOneBy({ id: parseInt(id) });
-        if (!product)
-            return res.status(404).json({ message: "Product not found" });
-        const validate = productSchema_1.default.validate(req.body);
+        const order = yield Order_1.Order.findOneBy({ id: parseInt(id) });
+        if (!order)
+            return res.status(404).json({ message: "Order not found" });
+        const validate = orderSchema_1.default.validate(req.body);
         if (!((_b = validate.error) === null || _b === void 0 ? void 0 : _b.message)) {
-            yield Product_1.Product.update({ id: parseInt(id) }, req.body);
+            yield Order_1.Order.update({ id: parseInt(id) }, req.body);
             return res.sendStatus(204);
         }
         else {
@@ -88,13 +84,13 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
 });
-exports.updateProduct = updateProduct;
-const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.updateOrder = updateOrder;
+const deleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        const result = yield Product_1.Product.delete({ id: parseInt(id) });
+        const result = yield Order_1.Order.delete({ id: parseInt(id) });
         if (result.affected === 0)
-            return res.status(404).json({ message: "Product not found" });
+            return res.status(404).json({ message: "Order not found" });
         return res.sendStatus(204);
     }
     catch (error) {
@@ -103,4 +99,4 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         }
     }
 });
-exports.deleteProduct = deleteProduct;
+exports.deleteOrder = deleteOrder;

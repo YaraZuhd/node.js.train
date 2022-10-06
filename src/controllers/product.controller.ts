@@ -1,8 +1,6 @@
 import { Request, Response  } from "express";
-import { AppDataSource } from "../db";
 import { Product } from "../entity/Product";
 import productSchema from "../schemas/productSchema";
-const userRepository = AppDataSource.getRepository(Product);
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
@@ -21,7 +19,7 @@ export const getProduct = async (req: Request, res: Response) => {
     const product = await Product.findOne({ where : {id : parseInt(id)}, relations : ['categories']});
 
     if (!product) return res.status(404).json({ message: "Product not found" });
-
+    
     return res.json(product);
   } catch (error) {
     if (error instanceof Error) {
