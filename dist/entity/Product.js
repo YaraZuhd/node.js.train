@@ -34,6 +34,12 @@ __decorate([
     (0, typeorm_1.Column)({
         nullable: true
     }),
+    __metadata("design:type", Number)
+], Product.prototype, "quintity", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        nullable: true
+    }),
     __metadata("design:type", String)
 ], Product.prototype, "desription", void 0);
 __decorate([

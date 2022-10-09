@@ -6,13 +6,15 @@ import {
     CreateDateColumn,
     OneToOne,
     UpdateDateColumn,
-    JoinColumn
+    JoinColumn,
+    OneToMany,
+    PrimaryColumn
   } from "typeorm";
-import { User } from "./User";
+import { Product } from "./Product";
   
   @Entity()
   export class Cart extends BaseEntity {
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
     id: number;
 
     @Column({
@@ -25,10 +27,6 @@ import { User } from "./User";
 
     @UpdateDateColumn()
     updatedAt: Date;
-
-    // @OneToOne(() => User)
-    // @JoinColumn()
-    // public user: User;
 
   }
 

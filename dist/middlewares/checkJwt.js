@@ -37,7 +37,7 @@ const checkJwt = (req, res, next) => {
     //Try to validate the token and get data
     try {
         jwtPayload = jwt.verify(token, secretkey_1.default.jwtSecret);
-        console.log(jwtPayload);
+        //console.log(jwtPayload);
         res.locals.jwtPayload = jwtPayload;
     }
     catch (error) {

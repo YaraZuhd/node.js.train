@@ -10,7 +10,7 @@ import {
   } from "typeorm";
 import bcrypt from "bcryptjs";
 import { Cart } from "./Cart";
-//import { Cart } from "./Cart";
+import { Order } from "./Order";
   
   @Entity()
   export class User extends BaseEntity {
@@ -65,6 +65,10 @@ import { Cart } from "./Cart";
     @OneToOne(() => Cart)
     @JoinColumn()
     cart: Cart;
+
+
+    @OneToOne(() => Order, (order) => order.user) 
+    orders: Order
 
     hashpassword(){
         this.password =  bcrypt.hashSync(this.password);

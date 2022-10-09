@@ -11,6 +11,7 @@ const productSchema = joi_1.default.object().keys({
     id: joi_1.default.number(),
     name: joi_1.default.string().required(),
     price: joi_1.default.number().required(),
+    quintity: joi_1.default.number().required(),
     desription: joi_1.default.string().required(),
     categories: joi_1.default.array().items(CategorySchema)
 });

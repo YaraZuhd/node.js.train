@@ -49,7 +49,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let user;
     try {
         user = yield User_1.User.findOneBy({ email: email });
-        console.log(user);
+        //console.log(user);
         if (user != null) {
             if (!user.validatenonhashpassword(password)) {
                 res.status(401).send({ message: "Password Not Match" });

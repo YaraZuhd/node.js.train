@@ -34,6 +34,7 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const user = yield User_1.User.findOne({ where: { id: parseInt(id) }, relations: ['cart'] });
         if (!user)
             return res.status(404).json({ message: "User not found" });
+        console.log(id, user);
         return res.json(user);
     }
     catch (error) {
@@ -49,13 +50,14 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const validate = userSchema_1.default.validate(req.body);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
             const cart = new Cart_1.Cart();
+            cart.id = parseInt(req.body.id);
             cart.quentity = 0;
             yield cart.save();
-            console.log(cart);
+            //console.log(cart);
             let user = new User_1.User();
             user.password = req.body.password;
             user.hashpassword();
-            console.log(user.password);
+            //console.log(user.password);
             user = yield User_1.User.create(Object.assign(Object.assign({}, req.body), user));
             user.cart = cart;
             yield user.save();
@@ -112,10 +114,10 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.deleteUser = deleteUser;
 const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = res.locals.jwtPayload.userId;
-    console.log(id);
+    //console.log(id);
     try {
         const user = yield User_1.User.findOne({ where: { id: parseInt(id) }, relations: ['cart'] });
-        console.log(user);
+        //console.log(user);
         return res.json(user);
     }
     catch (error) {

@@ -18,9 +18,9 @@ export const getUser = async (req: Request, res: Response) => {
   try {
     const { id } =  req.params;
     const user = await User.findOne({ where : {id : parseInt(id)} , relations : ['cart']});
-
+    
     if (!user) return res.status(404).json({ message: "User not found" });
-
+    console.log(id, user);
     return res.json(user);
   } catch (error) {
     if (error instanceof Error) {
@@ -37,13 +37,14 @@ export const createUser = async (
     const validate = userDetail.validate(req.body);
     if(!validate.error?.message){
       const cart = new Cart();
+      cart.id = parseInt(req.body.id);
       cart.quentity = 0;
       await cart.save();
-      console.log(cart);
+      //console.log(cart);
       let user = new User();
       user.password= req.body.password
       user.hashpassword();
-      console.log(user.password);
+      //console.log(user.password);
       user = await User.create({ ...req.body, ...user}) 
       user.cart = cart;
       await user.save();
@@ -82,7 +83,6 @@ export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const result = await User.delete({ id: parseInt(id) });
-
     if (result.affected === 0)
       return res.status(404).json({ message: "User not found" });
 
@@ -96,10 +96,10 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 export const getCurrentUser = async (req: Request, res: Response) => {
   const id = res.locals.jwtPayload.userId;
-  console.log(id);
+  //console.log(id);
   try {
     const user = await User.findOne({ where : {id : parseInt(id)} , relations : ['cart']});
-    console.log(user);
+    //console.log(user);
     return res.json(user);
   } catch (error) {
     if (error instanceof Error) {

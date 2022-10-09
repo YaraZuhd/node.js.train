@@ -11,7 +11,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Order = void 0;
 const typeorm_1 = require("typeorm");
+const Product_1 = require("./Product");
+const User_1 = require("./User");
 let Order = class Order extends typeorm_1.BaseEntity {
+    constructor() {
+        super(...arguments);
+        this.totalPrice = 0;
+        this.totalQuentities = 0;
+    }
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
@@ -25,6 +32,19 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Order.prototype, "totalPrice", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Order.prototype, "totalQuentities", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Product_1.Product, (product) => product),
+    __metadata("design:type", Array)
+], Order.prototype, "productItems", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => User_1.User, (user) => user.orders),
+    (0, typeorm_1.JoinColumn)(),
+    __metadata("design:type", User_1.User)
+], Order.prototype, "user", void 0);
 Order = __decorate([
     (0, typeorm_1.Entity)()
 ], Order);

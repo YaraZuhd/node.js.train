@@ -7,8 +7,11 @@ import {
     JoinTable,
     ManyToMany,
     UpdateDateColumn,
+    ManyToOne,
   } from "typeorm";
+import { Cart } from "./Cart";
 import { Category } from "./Category";
+import { Order } from "./Order";
   
   @Entity()
   export class Product extends BaseEntity {
@@ -24,6 +27,11 @@ import { Category } from "./Category";
       nullable : true
     })
     price: number;
+
+    @Column({
+      nullable : true
+    })
+    quintity: number;
   
     @Column({
       nullable : true
@@ -40,4 +48,7 @@ import { Category } from "./Category";
     @ManyToMany(() => Category)
     @JoinTable()
     categories: Category[];
+
+    // @ManyToOne(() => Order, (order) => order.productItems)
+    // order: Order
 }

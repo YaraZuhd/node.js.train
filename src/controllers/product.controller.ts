@@ -37,6 +37,7 @@ export const createProduct = async (
     if(!validate.error?.message){
       let product = new Product();
       product.price = parseInt(req.body.price);
+      product.quintity = parseInt(req.body.quentity);
       product = await Product.create({ ...req.body, ...product})
       await product.save();
       return res.json(product);

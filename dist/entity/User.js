@@ -16,7 +16,7 @@ exports.User = void 0;
 const typeorm_1 = require("typeorm");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const Cart_1 = require("./Cart");
-//import { Cart } from "./Cart";
+const Order_1 = require("./Order");
 let User = class User extends typeorm_1.BaseEntity {
     hashpassword() {
         this.password = bcryptjs_1.default.hashSync(this.password);
@@ -89,6 +89,10 @@ __decorate([
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", Cart_1.Cart)
 ], User.prototype, "cart", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => Order_1.Order, (order) => order.user),
+    __metadata("design:type", Order_1.Order)
+], User.prototype, "orders", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

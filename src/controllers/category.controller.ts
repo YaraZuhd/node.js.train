@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Category } from "../entity/Category";
+import { User } from "../entity/User";
 import categorySchema from "../schemas/categorySchema";
 
 

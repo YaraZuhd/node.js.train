@@ -49,6 +49,7 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
             let product = new Product_1.Product();
             product.price = parseInt(req.body.price);
+            product.quintity = parseInt(req.body.quentity);
             product = yield Product_1.Product.create(Object.assign(Object.assign({}, req.body), product));
             yield product.save();
             return res.json(product);

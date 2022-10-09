@@ -14,7 +14,7 @@ const typeorm_1 = require("typeorm");
 let Cart = class Cart extends typeorm_1.BaseEntity {
 };
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    (0, typeorm_1.PrimaryColumn)(),
     __metadata("design:type", Number)
 ], Cart.prototype, "id", void 0);
 __decorate([

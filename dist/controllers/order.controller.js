@@ -14,10 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteOrder = exports.updateOrder = exports.createOrder = exports.getOrder = exports.getOrders = void 0;
 const Order_1 = require("../entity/Order");
+const Product_1 = require("../entity/Product");
 const orderSchema_1 = __importDefault(require("../schemas/orderSchema"));
 const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const order = yield Order_1.Order.find();
+        const order = yield Order_1.Order.find({ relations: ['productItems'] });
         return res.json(order);
     }
     catch (error) {
@@ -30,7 +31,7 @@ exports.getOrders = getOrders;
 const getOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const order = yield Order_1.Order.findOneBy({ id: parseInt(id) });
+        const order = yield Order_1.Order.findOne({ where: { id: parseInt(id) }, relations: ['productItems'] });
         if (!order)
             return res.status(404).json({ message: "Order not found" });
         return res.json(order);
@@ -45,9 +46,29 @@ exports.getOrder = getOrder;
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        const order = new Order_1.Order();
-        const validate = orderSchema_1.default.validate(order);
+        const validate = orderSchema_1.default.validate(req.body);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
+            console.log(req.body);
+            let order = new Order_1.Order();
+            console.log(order.totalPrice, order.totalQuentities);
+            let Qsum = 0;
+            let Psum = 0;
+            console.log(req.body.productItems[0].id);
+            for (let i = 0; i < req.body.productItems.length; i++) {
+                const product = yield Product_1.Product.findOne({ where: { id: parseInt(req.body.productItems[i].id) }, relations: ['categories'] });
+                console.log(product);
+                if (product != null) {
+                    debugger;
+                    Qsum = Qsum + parseInt(req.body.productItems[i].quintity);
+                    Psum = Psum + parseInt(req.body.productItems[i].quintity) * product.price;
+                    console.log(Qsum, Psum, parseInt(req.body.productItems[i].quintity), product.price);
+                }
+            }
+            console.log(Qsum, Psum);
+            order.totalQuentities = Qsum;
+            order.totalPrice = Psum;
+            order = yield Order_1.Order.create(Object.assign(Object.assign({}, req.body), order));
+            console.log(order);
             yield order.save();
             return res.json(order);
         }
