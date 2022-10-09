@@ -49,6 +49,6 @@ import { Order } from "./Order";
     @JoinTable()
     categories: Category[];
 
-    // @ManyToOne(() => Order, (order) => order.productItems)
-    // order: Order
+    @ManyToOne(() => Order, (order) => order.productItems)
+    order: Order
 }

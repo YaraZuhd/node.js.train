@@ -5,7 +5,7 @@ import OrderSchema from "../schemas/orderSchema";
 
 
 
-export const getOrders = async (req: Request, res: Response) => {
+export const getOrders = async (_: Request, res: Response) => {
   try {
     const order = await Order.find({relations : ['productItems']});
     return res.json(order);
@@ -36,12 +36,9 @@ export const createOrder = async (
   try{
     const validate = OrderSchema.validate(req.body);
     if(!validate.error?.message){
-      console.log(req.body)
       let order = new Order();
-      console.log(order.totalPrice , order.totalQuentities);
       let Qsum = 0;
       let Psum = 0;
-      console.log(req.body.productItems[0].id);
       for(let i = 0; i< req.body.productItems.length; i++){
         const product = await Product.findOne({ where : {id :parseInt(req.body.productItems[i].id)}, relations : ['categories']});
         console.log(product);
@@ -49,10 +46,8 @@ export const createOrder = async (
           debugger;
             Qsum = Qsum + parseInt(req.body.productItems[i].quintity);
             Psum = Psum + parseInt(req.body.productItems[i].quintity)* product.price;
-            console.log(Qsum, Psum, parseInt(req.body.productItems[i].quintity) ,product.price);
           }
       }
-      console.log(Qsum,Psum);
       order.totalQuentities = Qsum;
       order.totalPrice = Psum;
       order.user = res.locals.jwtPayload.userId;

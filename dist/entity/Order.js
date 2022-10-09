@@ -42,7 +42,6 @@ __decorate([
 ], Order.prototype, "productItems", void 0);
 __decorate([
     (0, typeorm_1.OneToOne)(() => User_1.User, (user) => user.orders),
-    (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", User_1.User)
 ], Order.prototype, "user", void 0);
 Order = __decorate([

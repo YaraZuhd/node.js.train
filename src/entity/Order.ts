@@ -30,6 +30,5 @@ import { User } from "./User";
     productItems: Product[];
 
     @OneToOne(() => User, (user) => user.orders) 
-    @JoinColumn()
     user: User
 }

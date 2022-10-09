@@ -66,8 +66,8 @@ import { Order } from "./Order";
     @JoinColumn()
     cart: Cart;
 
-
     @OneToOne(() => Order, (order) => order.user) 
+    @JoinColumn()
     orders: Order
 
     hashpassword(){
