@@ -39,5 +39,5 @@ import { Category } from "./Category";
 
     @ManyToMany(() => Category)
     @JoinTable()
-  categories: Category[];
+    categories: Category[];
 }

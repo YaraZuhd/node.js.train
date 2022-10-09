@@ -10,6 +10,7 @@ import {
   } from "typeorm";
 import bcrypt from "bcryptjs";
 import { Cart } from "./Cart";
+//import { Cart } from "./Cart";
   
   @Entity()
   export class User extends BaseEntity {
@@ -61,12 +62,12 @@ import { Cart } from "./Cart";
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @OneToOne(() => Cart , (cart: Cart) => cart.user)
+    @OneToOne(() => Cart)
     @JoinColumn()
-    public cart: Cart;
+    cart: Cart;
 
     hashpassword(){
-        this.password = bcrypt.hashSync(this.password);
+        this.password =  bcrypt.hashSync(this.password);
     }
   
     validatenonhashpassword(password : string){

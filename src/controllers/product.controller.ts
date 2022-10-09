@@ -33,13 +33,11 @@ export const createProduct = async (
   res: Response
 ) => {
   try{
-    const product = new Product();
-    product.name = req.body.name;
-    product.price = parseInt(req.body.price);
-    product.desription = req.body.desription;
-    product.categories = req.body.categories;
-    const validate = productSchema.validate(product);
+    const validate = productSchema.validate(req.body);
     if(!validate.error?.message){
+      let product = new Product();
+      product.price = parseInt(req.body.price);
+      product = await Product.create({ ...req.body, ...product})
       await product.save();
       return res.json(product);
     }else{

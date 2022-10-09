@@ -13,6 +13,6 @@ const userDetail = joi_1.default.object().keys({
     email: joi_1.default.string().email().required(),
     password: joi_1.default.string().required(),
     address: joi_1.default.string(),
-    role: joi_1.default.string().valid('user', 'admin', 'product admin').required()
+    role: joi_1.default.string().valid('user', 'admin', 'product admin'),
 });
 exports.default = userDetail;

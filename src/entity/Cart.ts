@@ -4,7 +4,9 @@ import {
     PrimaryGeneratedColumn,
     BaseEntity,
     CreateDateColumn,
-    OneToOne
+    OneToOne,
+    UpdateDateColumn,
+    JoinColumn
   } from "typeorm";
 import { User } from "./User";
   
@@ -12,18 +14,21 @@ import { User } from "./User";
   export class Cart extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
-  
-    // @Column({
-    //   nullable : true,
-    //   default : "None"
-    // })
-    // cartStatus: string;
+
+    @Column({
+      nullable : true,
+    })
+    quentity: number;
 
     @CreateDateColumn()
     createdAt: Date;
 
-    @OneToOne(() => User, (user: User) => user.cart)
-    public user: User;
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    // @OneToOne(() => User)
+    // @JoinColumn()
+    // public user: User;
 
   }
 

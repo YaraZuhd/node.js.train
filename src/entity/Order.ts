@@ -3,6 +3,7 @@ import {
     PrimaryGeneratedColumn,
     BaseEntity,
     CreateDateColumn,
+    Column,
   } from "typeorm";
   
   @Entity()
@@ -12,5 +13,8 @@ import {
   
     @CreateDateColumn()
     orderDate: Date;
+
+    @Column()
+    totalPrice : number;
   
 }

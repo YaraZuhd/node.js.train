@@ -45,10 +45,10 @@ exports.getCategory = getCategory;
 const createCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        const category = new Category_1.Category();
-        category.name = req.body.name;
-        const validate = categorySchema_1.default.validate(category);
+        const validate = categorySchema_1.default.validate(req.body);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
+            let category = new Category_1.Category();
+            category = yield Category_1.Category.create(Object.assign({}, req.body));
             yield category.save();
             return res.json(category);
         }

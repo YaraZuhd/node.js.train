@@ -45,13 +45,11 @@ exports.getProduct = getProduct;
 const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        const product = new Product_1.Product();
-        product.name = req.body.name;
-        product.price = parseInt(req.body.price);
-        product.desription = req.body.desription;
-        product.categories = req.body.categories;
-        const validate = productSchema_1.default.validate(product);
+        const validate = productSchema_1.default.validate(req.body);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
+            let product = new Product_1.Product();
+            product.price = parseInt(req.body.price);
+            product = yield Product_1.Product.create(Object.assign(Object.assign({}, req.body), product));
             yield product.save();
             return res.json(product);
         }

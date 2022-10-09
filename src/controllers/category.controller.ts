@@ -35,10 +35,10 @@ export const createCategory = async (
   res: Response
 ) => {
   try{
-    const category = new Category();
-    category.name = req.body.name;
-    const validate = categorySchema.validate(category);
+    const validate = categorySchema.validate(req.body);
     if(!validate.error?.message){
+      let category = new Category();
+      category = await Category.create({ ...req.body})
       await category.save();
       return res.json(category);
     }else{

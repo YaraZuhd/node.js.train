@@ -21,6 +21,10 @@ __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
 ], Order.prototype, "orderDate", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Order.prototype, "totalPrice", void 0);
 Order = __decorate([
     (0, typeorm_1.Entity)()
 ], Order);

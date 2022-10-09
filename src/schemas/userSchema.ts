@@ -9,7 +9,7 @@ const userDetail =  Joi.object().keys({
       email : Joi.string().email().required(),
       password: Joi.string().required(),
       address : Joi.string(),
-      role : Joi.string().valid('user', 'admin', 'product admin').required()
+      role : Joi.string().valid('user', 'admin', 'product admin'),
 });
 
 export default userDetail;

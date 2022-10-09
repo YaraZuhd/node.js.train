@@ -18,7 +18,7 @@ const User_1 = require("../entity/User");
 const userSchema_1 = __importDefault(require("../schemas/userSchema"));
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield User_1.User.find();
+        const users = yield User_1.User.find({ relations: ['cart'] });
         return res.json(users);
     }
     catch (error) {
@@ -31,7 +31,7 @@ exports.getUsers = getUsers;
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const user = yield User_1.User.findOne({ where: { id: parseInt(id) } });
+        const user = yield User_1.User.findOne({ where: { id: parseInt(id) }, relations: ['cart'] });
         if (!user)
             return res.status(404).json({ message: "User not found" });
         return res.json(user);
@@ -46,20 +46,18 @@ exports.getUser = getUser;
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
-        const user = new User_1.User();
-        user.firstname = req.body.firstname;
-        user.lastname = req.body.lastname;
-        user.gender = req.body.gender;
-        user.phone = req.body.phone;
-        user.email = req.body.email;
-        user.password = req.body.password;
-        user.hashpassword();
-        user.address = req.body.address;
-        user.role = req.body.role || "user";
-        const cart = new Cart_1.Cart();
-        yield cart.save();
-        const validate = userSchema_1.default.validate(user);
+        const validate = userSchema_1.default.validate(req.body);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
+            const cart = new Cart_1.Cart();
+            cart.quentity = 0;
+            yield cart.save();
+            console.log(cart);
+            let user = new User_1.User();
+            user.password = req.body.password;
+            user.hashpassword();
+            console.log(user.password);
+            user = yield User_1.User.create(Object.assign(Object.assign({}, req.body), user));
+            user.cart = cart;
             yield user.save();
             return res.json(user);
         }
@@ -116,7 +114,7 @@ const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const id = res.locals.jwtPayload.userId;
     console.log(id);
     try {
-        const user = yield User_1.User.findOneBy({ id: parseInt(id) });
+        const user = yield User_1.User.findOne({ where: { id: parseInt(id) }, relations: ['cart'] });
         console.log(user);
         return res.json(user);
     }
