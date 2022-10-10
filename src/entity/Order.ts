@@ -4,12 +4,15 @@ import {
     BaseEntity,
     CreateDateColumn,
     Column,
-    OneToMany,
-    OneToOne,
     JoinColumn,
+    ManyToOne,
+    OneToMany,
+    ManyToMany,
+    JoinTable,
   } from "typeorm";
 import { Product } from "./Product";
 import { User } from "./User";
+
   
   @Entity()
   export class Order extends BaseEntity {
@@ -20,16 +23,19 @@ import { User } from "./User";
     orderDate: Date;
 
     @Column()
-    totalPrice : number = 0; 
+    totalPrice : number = 0;
     
     @Column()
-    totalQuentities : number = 0; 
+    name : String;
+    
+    @Column()
+    totalQuentities : number = 0;
 
-
-    @OneToMany(() => Product, (product) => product)
-    productItems: Product[];
-
-    @OneToOne(() => User, (user) => user.orders) 
+    @ManyToOne(() => User, (user) => user.orders)
     @JoinColumn()
-    user: User
+    user: User;
+
+    @ManyToMany(() => Product, (prodcutItems)=>prodcutItems)
+    @JoinTable()
+    prodcutItems: Product[];
 }

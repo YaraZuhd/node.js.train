@@ -18,6 +18,10 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const Cart_1 = require("./Cart");
 const Order_1 = require("./Order");
 let User = class User extends typeorm_1.BaseEntity {
+    constructor() {
+        super(...arguments);
+        this.role = "user";
+    }
     hashpassword() {
         this.password = bcryptjs_1.default.hashSync(this.password);
     }
@@ -71,9 +75,7 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "address", void 0);
 __decorate([
-    (0, typeorm_1.Column)({
-        default: "user",
-    }),
+    (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
@@ -90,9 +92,8 @@ __decorate([
     __metadata("design:type", Cart_1.Cart)
 ], User.prototype, "cart", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => Order_1.Order, (order) => order.user),
-    (0, typeorm_1.JoinColumn)(),
-    __metadata("design:type", Order_1.Order)
+    (0, typeorm_1.OneToMany)(() => Order_1.Order, (order) => order.user),
+    __metadata("design:type", Array)
 ], User.prototype, "orders", void 0);
 User = __decorate([
     (0, typeorm_1.Entity)()

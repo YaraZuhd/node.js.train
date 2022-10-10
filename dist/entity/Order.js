@@ -34,17 +34,22 @@ __decorate([
 ], Order.prototype, "totalPrice", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Order.prototype, "name", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
     __metadata("design:type", Number)
 ], Order.prototype, "totalQuentities", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Product_1.Product, (product) => product),
-    __metadata("design:type", Array)
-], Order.prototype, "productItems", void 0);
-__decorate([
-    (0, typeorm_1.OneToOne)(() => User_1.User, (user) => user.orders),
+    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.orders),
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", User_1.User)
 ], Order.prototype, "user", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => Product_1.Product, (prodcutItems) => prodcutItems),
+    (0, typeorm_1.JoinTable)(),
+    __metadata("design:type", Array)
+], Order.prototype, "prodcutItems", void 0);
 Order = __decorate([
     (0, typeorm_1.Entity)()
 ], Order);

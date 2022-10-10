@@ -6,11 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const joi_1 = __importDefault(require("joi"));
 const ProductSchema = joi_1.default.object().keys({
     id: joi_1.default.number().required(),
-    quintity: joi_1.default.number().required()
+    quantity: joi_1.default.number().required()
 });
 const OrderSchema = joi_1.default.object().keys({
     id: joi_1.default.number(),
     totalPrice: joi_1.default.number(),
+    name: joi_1.default.string().required(),
     totalQuentities: joi_1.default.number(),
     productItems: joi_1.default.array().items(ProductSchema).required()
 });

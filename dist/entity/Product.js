@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Product = void 0;
 const typeorm_1 = require("typeorm");
 const Category_1 = require("./Category");
-const Order_1 = require("./Order");
 let Product = class Product extends typeorm_1.BaseEntity {
 };
 __decorate([
@@ -36,7 +35,7 @@ __decorate([
         nullable: true
     }),
     __metadata("design:type", Number)
-], Product.prototype, "quintity", void 0);
+], Product.prototype, "quantity", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         nullable: true
@@ -56,10 +55,6 @@ __decorate([
     (0, typeorm_1.JoinTable)(),
     __metadata("design:type", Array)
 ], Product.prototype, "categories", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => Order_1.Order, (order) => order.productItems),
-    __metadata("design:type", Order_1.Order)
-], Product.prototype, "order", void 0);
 Product = __decorate([
     (0, typeorm_1.Entity)()
 ], Product);

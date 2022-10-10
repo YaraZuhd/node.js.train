@@ -8,10 +8,11 @@ import {
     ManyToMany,
     UpdateDateColumn,
     ManyToOne,
+    JoinColumn,
   } from "typeorm";
-import { Cart } from "./Cart";
 import { Category } from "./Category";
 import { Order } from "./Order";
+
   
   @Entity()
   export class Product extends BaseEntity {
@@ -31,7 +32,7 @@ import { Order } from "./Order";
     @Column({
       nullable : true
     })
-    quintity: number;
+    quantity: number;
   
     @Column({
       nullable : true
@@ -49,6 +50,9 @@ import { Order } from "./Order";
     @JoinTable()
     categories: Category[];
 
-    @ManyToOne(() => Order, (order) => order.productItems)
-    order: Order
+    // @ManyToOne(() => Order)
+    // @JoinColumn([{ name: 'order_id', referencedColumnName: 'id' }])
+    // order: Order
+
+
 }

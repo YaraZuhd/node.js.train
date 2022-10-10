@@ -15,10 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteOrder = exports.updateOrder = exports.createOrder = exports.getOrder = exports.getOrders = void 0;
 const Order_1 = require("../entity/Order");
 const Product_1 = require("../entity/Product");
+const User_1 = require("../entity/User");
 const orderSchema_1 = __importDefault(require("../schemas/orderSchema"));
 const getOrders = (_, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const order = yield Order_1.Order.find({ relations: ['productItems'] });
+        const order = yield Order_1.Order.find({ relations: ['user', 'prodcutItems'] });
         return res.json(order);
     }
     catch (error) {
@@ -31,7 +32,7 @@ exports.getOrders = getOrders;
 const getOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const order = yield Order_1.Order.findOne({ where: { id: parseInt(id) }, relations: ['productItems'] });
+        const order = yield Order_1.Order.findOne({ where: { id: parseInt(id) }, relations: ['user', 'prodcutItems'] });
         if (!order)
             return res.status(404).json({ message: "Order not found" });
         return res.json(order);
@@ -53,19 +54,34 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             let Psum = 0;
             for (let i = 0; i < req.body.productItems.length; i++) {
                 const product = yield Product_1.Product.findOne({ where: { id: parseInt(req.body.productItems[i].id) }, relations: ['categories'] });
-                console.log(product);
+                if (!product)
+                    return res.status(404).json({ message: "Product not found" });
                 if (product != null) {
-                    debugger;
-                    Qsum = Qsum + parseInt(req.body.productItems[i].quintity);
-                    Psum = Psum + parseInt(req.body.productItems[i].quintity) * product.price;
+                    if ((product.quantity - req.body.productItems[i].quantity) < 0) {
+                        return res.status(404).json({ message: `The Quantity you Entered Is More than The Product Quantity ${product.quantity}` });
+                    }
+                    else {
+                        Qsum = Qsum + parseInt(req.body.productItems[i].quantity);
+                        Psum = Psum + parseInt(req.body.productItems[i].quantity) * product.price;
+                        product.quantity = product.quantity - req.body.productItems[i].quantity;
+                        yield product.save();
+                    }
                 }
             }
             order.totalQuentities = Qsum;
             order.totalPrice = Psum;
-            order.user = res.locals.jwtPayload.userId;
-            order = yield Order_1.Order.create(Object.assign(Object.assign({}, req.body), order));
-            console.log(order);
-            yield order.save();
+            const id = res.locals.jwtPayload.userId;
+            order.user = id;
+            const user = yield User_1.User.findOneBy({ id: parseInt(id) });
+            if (user != null) {
+                const orders = [order];
+                Object.assign(user, orders);
+                yield user.save();
+                order.prodcutItems = req.body.productItems;
+                order = yield Order_1.Order.create(Object.assign(Object.assign({}, req.body), order));
+                console.log(order);
+                yield order.save();
+            }
             return res.json(order);
         }
         else {

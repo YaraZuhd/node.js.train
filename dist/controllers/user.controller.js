@@ -18,7 +18,7 @@ const User_1 = require("../entity/User");
 const userSchema_1 = __importDefault(require("../schemas/userSchema"));
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield User_1.User.find({ relations: ['cart'] });
+        const users = yield User_1.User.find({ relations: ['cart', 'orders'] });
         return res.json(users);
     }
     catch (error) {
@@ -31,7 +31,7 @@ exports.getUsers = getUsers;
 const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const user = yield User_1.User.findOne({ where: { id: parseInt(id) }, relations: ['cart'] });
+        const user = yield User_1.User.findOne({ where: { id: parseInt(id) }, relations: ['cart', 'orders'] });
         if (!user)
             return res.status(404).json({ message: "User not found" });
         console.log(id, user);
@@ -116,7 +116,7 @@ const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const id = res.locals.jwtPayload.userId;
     //console.log(id);
     try {
-        const user = yield User_1.User.findOne({ where: { id: parseInt(id) }, relations: ['cart'] });
+        const user = yield User_1.User.findOne({ where: { id: parseInt(id) }, relations: ['cart', 'orders'] });
         //console.log(user);
         return res.json(user);
     }

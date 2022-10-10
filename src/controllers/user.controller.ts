@@ -5,7 +5,7 @@ import userDetail  from "../schemas/userSchema";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find({relations : ['cart']});
+    const users = await User.find({relations : ['cart', 'orders']});
     return res.json(users);
   } catch (error) {
     if (error instanceof Error) {
@@ -17,7 +17,7 @@ export const getUsers = async (req: Request, res: Response) => {
 export const getUser = async (req: Request, res: Response) => {
   try {
     const { id } =  req.params;
-    const user = await User.findOne({ where : {id : parseInt(id)} , relations : ['cart']});
+    const user = await User.findOne({ where : {id : parseInt(id)} , relations : ['cart' ,'orders']});
     
     if (!user) return res.status(404).json({ message: "User not found" });
     console.log(id, user);
@@ -98,7 +98,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
   const id = res.locals.jwtPayload.userId;
   //console.log(id);
   try {
-    const user = await User.findOne({ where : {id : parseInt(id)} , relations : ['cart']});
+    const user = await User.findOne({ where : {id : parseInt(id)} , relations : ['cart' ,'orders']});
     //console.log(user);
     return res.json(user);
   } catch (error) {

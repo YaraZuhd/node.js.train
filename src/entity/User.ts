@@ -7,6 +7,7 @@ import {
     UpdateDateColumn,
     JoinColumn,
     OneToOne,
+    OneToMany,
   } from "typeorm";
 import bcrypt from "bcryptjs";
 import { Cart } from "./Cart";
@@ -64,9 +65,8 @@ import { Order } from "./Order";
     @JoinColumn()
     cart: Cart;
 
-    @OneToOne(() => Order, (order) => order.user) 
-    @JoinColumn()
-    orders: Order
+    @OneToMany(() => Order, (order) => order.user)
+    orders: Order[];
 
     hashpassword(){
         this.password =  bcrypt.hashSync(this.password);
