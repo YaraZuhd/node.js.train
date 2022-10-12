@@ -52,8 +52,11 @@ import { Order } from "./Order";
     @Column()
     address : string;
   
-    @Column()
-    role: string = "user";
+    @Column({
+      nullable : true,
+      default : "user"
+    })
+    role: string;
   
     @CreateDateColumn()
     createdAt: Date;

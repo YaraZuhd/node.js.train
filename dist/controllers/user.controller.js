@@ -50,14 +50,11 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const validate = userSchema_1.default.validate(req.body);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
             const cart = new Cart_1.Cart();
-            cart.id = parseInt(req.body.id);
             cart.quentity = 0;
             yield cart.save();
-            //console.log(cart);
             let user = new User_1.User();
             user.password = req.body.password;
             user.hashpassword();
-            //console.log(user.password);
             user = yield User_1.User.create(Object.assign(Object.assign({}, req.body), user));
             user.cart = cart;
             yield user.save();

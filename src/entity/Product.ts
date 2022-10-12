@@ -50,9 +50,11 @@ import { Order } from "./Order";
     @JoinTable()
     categories: Category[];
 
-    // @ManyToOne(() => Order)
-    // @JoinColumn([{ name: 'order_id', referencedColumnName: 'id' }])
-    // order: Order
+    @ManyToOne(() => Order)
+    order: Order
 
+    @ManyToOne(() => Product)
+    @JoinColumn()
+    dummyFieldForManyToOne: unknown;
 
 }

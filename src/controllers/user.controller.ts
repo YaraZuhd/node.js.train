@@ -37,14 +37,11 @@ export const createUser = async (
     const validate = userDetail.validate(req.body);
     if(!validate.error?.message){
       const cart = new Cart();
-      cart.id = parseInt(req.body.id);
       cart.quentity = 0;
       await cart.save();
-      //console.log(cart);
       let user = new User();
       user.password= req.body.password
       user.hashpassword();
-      //console.log(user.password);
       user = await User.create({ ...req.body, ...user}) 
       user.cart = cart;
       await user.save();

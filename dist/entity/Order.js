@@ -46,10 +46,9 @@ __decorate([
     __metadata("design:type", User_1.User)
 ], Order.prototype, "user", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => Product_1.Product, (prodcutItems) => prodcutItems),
-    (0, typeorm_1.JoinTable)(),
+    (0, typeorm_1.OneToMany)(() => Product_1.Product, (prodcutItems) => prodcutItems.dummyFieldForManyToOne),
     __metadata("design:type", Array)
-], Order.prototype, "prodcutItems", void 0);
+], Order.prototype, "productItems", void 0);
 Order = __decorate([
     (0, typeorm_1.Entity)()
 ], Order);

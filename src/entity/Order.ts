@@ -35,7 +35,6 @@ import { User } from "./User";
     @JoinColumn()
     user: User;
 
-    @ManyToMany(() => Product, (prodcutItems)=>prodcutItems)
-    @JoinTable()
-    prodcutItems: Product[];
+    @OneToMany(() => Product, (prodcutItems)=>prodcutItems.dummyFieldForManyToOne)
+    productItems: Product[];
 }

@@ -4,12 +4,12 @@ import {
     BaseEntity,
     CreateDateColumn,
     UpdateDateColumn,
-    PrimaryColumn
+    PrimaryGeneratedColumn
   } from "typeorm";
   
   @Entity()
   export class Cart extends BaseEntity {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column({

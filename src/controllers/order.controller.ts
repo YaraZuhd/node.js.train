@@ -8,7 +8,7 @@ import OrderSchema from "../schemas/orderSchema";
 
 export const getOrders = async (_: Request, res: Response) => {
   try {
-    const order = await Order.find({relations : ['user', 'prodcutItems']});
+    const order = await Order.find({relations : ['user', 'productItems']});
     return res.json(order);
   } catch (error) {
     if (error instanceof Error) {
@@ -20,7 +20,7 @@ export const getOrders = async (_: Request, res: Response) => {
 export const getOrder = async (req: Request, res: Response) => {
   try {
     const { id } =  req.params;
-    const order = await Order.findOne({ where : {id : parseInt(id)}, relations : ['user', 'prodcutItems']});
+    const order = await Order.findOne({ where : {id : parseInt(id)}, relations : ['user', 'productItems']});
     if (!order) return res.status(404).json({ message: "Order not found" });
     return res.json(order);
   } catch (error) {
@@ -45,7 +45,7 @@ export const createOrder = async (
         if (!product) return res.status(404).json({ message: "Product not found" });
         if(product != null){
             if((product.quantity - req.body.productItems[i].quantity) < 0){
-              return res.status(404).json({ message: `The Quantity you Entered Is More than The Product Quantity ${product.quantity}`});
+              return res.status(404).json({ message: `The Quantity you Entered Is More than The Product Quantity which is ${product.quantity}`});
             }else{
               Qsum = Qsum + parseInt(req.body.productItems[i].quantity);
               Psum = Psum + parseInt(req.body.productItems[i].quantity)* product.price;
@@ -56,17 +56,16 @@ export const createOrder = async (
       }
       order.totalQuentities = Qsum;
       order.totalPrice = Psum;
-      const id = res.locals.jwtPayload.userId;
-      order.user = id;
-      const user = await User.findOneBy({ id: parseInt(id) });
+      order.user = res.locals.jwtPayload.userId;
+      const user = await User.findOneBy({ id: parseInt(res.locals.jwtPayload.userId) });
       if (user != null){
         const orders = [order];
         Object.assign(user, orders);
         await user.save();
-        order.prodcutItems = req.body.productItems;
+        order.productItems = req.body.productItems;
         order = await Order.create({ ...req.body, ...order});
-        console.log(order);
         await order.save();
+        console.log(order);
       }
       return res.json(order);
     }else{

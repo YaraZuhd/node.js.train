@@ -19,7 +19,7 @@ const User_1 = require("../entity/User");
 const orderSchema_1 = __importDefault(require("../schemas/orderSchema"));
 const getOrders = (_, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const order = yield Order_1.Order.find({ relations: ['user', 'prodcutItems'] });
+        const order = yield Order_1.Order.find({ relations: ['user', 'productItems'] });
         return res.json(order);
     }
     catch (error) {
@@ -32,7 +32,7 @@ exports.getOrders = getOrders;
 const getOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const order = yield Order_1.Order.findOne({ where: { id: parseInt(id) }, relations: ['user', 'prodcutItems'] });
+        const order = yield Order_1.Order.findOne({ where: { id: parseInt(id) }, relations: ['user', 'productItems'] });
         if (!order)
             return res.status(404).json({ message: "Order not found" });
         return res.json(order);
@@ -58,7 +58,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                     return res.status(404).json({ message: "Product not found" });
                 if (product != null) {
                     if ((product.quantity - req.body.productItems[i].quantity) < 0) {
-                        return res.status(404).json({ message: `The Quantity you Entered Is More than The Product Quantity ${product.quantity}` });
+                        return res.status(404).json({ message: `The Quantity you Entered Is More than The Product Quantity which is ${product.quantity}` });
                     }
                     else {
                         Qsum = Qsum + parseInt(req.body.productItems[i].quantity);
@@ -70,17 +70,16 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             }
             order.totalQuentities = Qsum;
             order.totalPrice = Psum;
-            const id = res.locals.jwtPayload.userId;
-            order.user = id;
-            const user = yield User_1.User.findOneBy({ id: parseInt(id) });
+            order.user = res.locals.jwtPayload.userId;
+            const user = yield User_1.User.findOneBy({ id: parseInt(res.locals.jwtPayload.userId) });
             if (user != null) {
                 const orders = [order];
                 Object.assign(user, orders);
                 yield user.save();
-                order.prodcutItems = req.body.productItems;
+                order.productItems = [req.body.productItems];
                 order = yield Order_1.Order.create(Object.assign(Object.assign({}, req.body), order));
-                console.log(order);
                 yield order.save();
+                console.log(order);
             }
             return res.json(order);
         }

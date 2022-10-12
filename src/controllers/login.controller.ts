@@ -14,7 +14,6 @@ export const loginUser = async (req: Request, res: Response) => {
    let user: User | null;
    try {
      user = await User.findOneBy({ email: email });
-     //console.log(user);
      if(user != null){
         if (!user.validatenonhashpassword(password)) {
             res.status(401).send({message : "Password Not Match"});

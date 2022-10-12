@@ -18,10 +18,6 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const Cart_1 = require("./Cart");
 const Order_1 = require("./Order");
 let User = class User extends typeorm_1.BaseEntity {
-    constructor() {
-        super(...arguments);
-        this.role = "user";
-    }
     hashpassword() {
         this.password = bcryptjs_1.default.hashSync(this.password);
     }
@@ -75,7 +71,10 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "address", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({
+        nullable: true,
+        default: "user"
+    }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
