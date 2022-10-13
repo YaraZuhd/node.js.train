@@ -49,7 +49,8 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
       const cart = await Cart.findOne({where : {id : parseInt(id)}, relations : ['orders']}) ;
       if(cart != null){
         cart.orders = [];
-        return res.status(204).send("Deleted Successfuly");
+        await cart.save();
+        return res.status(204).json({message : "Deleted Successfuly"});
       }else{
         return res.status(400).json({message : 'Cart is Empty'});
       } 

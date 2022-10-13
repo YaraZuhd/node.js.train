@@ -61,7 +61,8 @@ const deletecartItems = (req, res) => __awaiter(void 0, void 0, void 0, function
         const cart = yield Cart_1.Cart.findOne({ where: { id: parseInt(id) }, relations: ['orders'] });
         if (cart != null) {
             cart.orders = [];
-            return res.status(204).send("Deleted Successfuly");
+            yield cart.save();
+            return res.status(204).json({ message: "Deleted Successfuly" });
         }
         else {
             return res.status(400).json({ message: 'Cart is Empty' });
