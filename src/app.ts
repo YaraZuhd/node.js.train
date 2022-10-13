@@ -8,6 +8,7 @@ import loginRoutes from "./routes/login.routes";
 import productRoutes from "./routes/product.routes";
 import categoryRoutes from "./routes/category.routes";
 import orderRoutes from "./routes/order.routes";
+import cartRoutes from "./routes/cart.routes";
 
 
 
@@ -24,6 +25,7 @@ app.use("/login", loginRoutes);
 app.use("/products", productRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/order",orderRoutes);
+app.use("/cart",cartRoutes);
 
 
 

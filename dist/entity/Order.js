@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Order = void 0;
 const typeorm_1 = require("typeorm");
+const Cart_1 = require("./Cart");
 const Product_1 = require("./Product");
 const User_1 = require("./User");
 let Order = class Order extends typeorm_1.BaseEntity {
@@ -41,14 +42,27 @@ __decorate([
     __metadata("design:type", Number)
 ], Order.prototype, "totalQuentities", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.orders),
+    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.orders, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    }),
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", User_1.User)
 ], Order.prototype, "user", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Product_1.Product, (prodcutItems) => prodcutItems.dummyFieldForManyToOne),
+    (0, typeorm_1.OneToMany)(() => Product_1.Product, (prodcutItems) => prodcutItems.order, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    }),
     __metadata("design:type", Array)
 ], Order.prototype, "productItems", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => Cart_1.Cart, (cart) => cart.orders, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    }),
+    __metadata("design:type", Cart_1.Cart)
+], Order.prototype, "cart", void 0);
 Order = __decorate([
     (0, typeorm_1.Entity)()
 ], Order);

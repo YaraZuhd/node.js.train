@@ -86,12 +86,18 @@ __decorate([
     __metadata("design:type", Date)
 ], User.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => Cart_1.Cart),
+    (0, typeorm_1.OneToOne)(() => Cart_1.Cart, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    }),
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", Cart_1.Cart)
 ], User.prototype, "cart", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Order_1.Order, (order) => order.user),
+    (0, typeorm_1.OneToMany)(() => Order_1.Order, (order) => order.user, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    }),
     __metadata("design:type", Array)
 ], User.prototype, "orders", void 0);
 User = __decorate([

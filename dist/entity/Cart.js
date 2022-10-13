@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Cart = void 0;
 const typeorm_1 = require("typeorm");
+const Order_1 = require("./Order");
 let Cart = class Cart extends typeorm_1.BaseEntity {
 };
 __decorate([
@@ -24,6 +25,12 @@ __decorate([
     __metadata("design:type", Number)
 ], Cart.prototype, "quentity", void 0);
 __decorate([
+    (0, typeorm_1.Column)({
+        nullable: true,
+    }),
+    __metadata("design:type", Number)
+], Cart.prototype, "price", void 0);
+__decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
 ], Cart.prototype, "createdAt", void 0);
@@ -31,6 +38,13 @@ __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
 ], Cart.prototype, "updatedAt", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Order_1.Order, (orders) => orders.cart, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    }),
+    __metadata("design:type", Array)
+], Cart.prototype, "orders", void 0);
 Cart = __decorate([
     (0, typeorm_1.Entity)()
 ], Cart);

@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Cart } from "../entity/Cart";
 import { Order } from "../entity/Order";
 import { Product } from "../entity/Product";
 import { User } from "../entity/User";
@@ -57,15 +58,23 @@ export const createOrder = async (
       order.totalQuentities = Qsum;
       order.totalPrice = Psum;
       order.user = res.locals.jwtPayload.userId;
-      const user = await User.findOneBy({ id: parseInt(res.locals.jwtPayload.userId) });
+      const user = await User.findOne({where : { id: parseInt(res.locals.jwtPayload.userId) }, relations: ['cart']});
       if (user != null){
         const orders = [order];
         Object.assign(user, orders);
         await user.save();
         order.productItems = req.body.productItems;
+        order.cart = user.cart;
+        const cart = await Cart.findOneBy({id : user.cart.id});
         order = await Order.create({ ...req.body, ...order});
+        if(cart != null){
+          cart.orders = [order];
+          cart.quentity = cart.quentity + order.totalQuentities;
+          cart.price = cart.price + order.totalPrice;
+          await cart.save();
+        }
+        console.log(order);        
         await order.save();
-        console.log(order);
       }
       return res.json(order);
     }else{
@@ -102,7 +111,6 @@ export const deleteOrder = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const result = await Order.delete({ id: parseInt(id) });
-
     if (result.affected === 0)
       return res.status(404).json({ message: "Order not found" });
 

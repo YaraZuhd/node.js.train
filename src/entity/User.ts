@@ -64,11 +64,17 @@ import { Order } from "./Order";
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @OneToOne(() => Cart)
+    @OneToOne(() => Cart,{
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    })
     @JoinColumn()
     cart: Cart;
 
-    @OneToMany(() => Order, (order) => order.user)
+    @OneToMany(() => Order, (order) => order.user,{
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    })
     orders: Order[];
 
     hashpassword(){

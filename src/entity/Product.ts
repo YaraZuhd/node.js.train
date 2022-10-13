@@ -46,15 +46,18 @@ import { Order } from "./Order";
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToMany(() => Category)
+    @ManyToMany(() => Category,{
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    })
     @JoinTable()
     categories: Category[];
 
-    @ManyToOne(() => Order)
-    order: Order
-
-    @ManyToOne(() => Product)
+    @ManyToOne(() => Order, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    })
     @JoinColumn()
-    dummyFieldForManyToOne: unknown;
+    order: Order;
 
 }

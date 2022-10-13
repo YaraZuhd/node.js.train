@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteOrder = exports.updateOrder = exports.createOrder = exports.getOrder = exports.getOrders = void 0;
+const Cart_1 = require("../entity/Cart");
 const Order_1 = require("../entity/Order");
 const Product_1 = require("../entity/Product");
 const User_1 = require("../entity/User");
@@ -71,15 +72,23 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             order.totalQuentities = Qsum;
             order.totalPrice = Psum;
             order.user = res.locals.jwtPayload.userId;
-            const user = yield User_1.User.findOneBy({ id: parseInt(res.locals.jwtPayload.userId) });
+            const user = yield User_1.User.findOne({ where: { id: parseInt(res.locals.jwtPayload.userId) }, relations: ['cart'] });
             if (user != null) {
                 const orders = [order];
                 Object.assign(user, orders);
                 yield user.save();
-                order.productItems = [req.body.productItems];
+                order.productItems = req.body.productItems;
+                order.cart = user.cart;
+                const cart = yield Cart_1.Cart.findOneBy({ id: user.cart.id });
                 order = yield Order_1.Order.create(Object.assign(Object.assign({}, req.body), order));
-                yield order.save();
+                if (cart != null) {
+                    cart.orders = [order];
+                    cart.quentity = cart.quentity + order.totalQuentities;
+                    cart.price = cart.price + order.totalPrice;
+                    yield cart.save();
+                }
                 console.log(order);
+                yield order.save();
             }
             return res.json(order);
         }
