@@ -8,7 +8,6 @@ const productSchema =  Joi.object().keys({
       id: Joi.number(),
       name: Joi.string().required(), 
       price: Joi.number().required(),
-      quantity : Joi.number().required(), 
       desription : Joi.string().required(),
       categories : Joi.array().items(CategorySchema)
 });

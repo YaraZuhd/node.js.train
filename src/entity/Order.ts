@@ -7,9 +7,10 @@ import {
     JoinColumn,
     ManyToOne,
     OneToMany,
+    OneToOne,
   } from "typeorm";
 import { Cart } from "./Cart";
-import { Product } from "./Product";
+import { OrderItems } from "./orderItems";
 import { User } from "./User";
 
   
@@ -26,6 +27,9 @@ import { User } from "./User";
     
     @Column()
     name : String;
+
+    @Column()
+    status : String;
     
     @Column()
     totalQuentities : number = 0;
@@ -37,15 +41,14 @@ import { User } from "./User";
     @JoinColumn()
     user: User;
 
-    @OneToMany(() => Product, (prodcutItems)=>prodcutItems.order,{
+    @OneToMany(() => OrderItems, (items)=>items.order,{
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     })
-    productItems: Product[];
+    items: OrderItems[];
 
-    @ManyToOne(()=> Cart , (cart) => cart.orders,{
-      onDelete: 'CASCADE',
-      onUpdate: 'CASCADE'
-    })
-    cart : Cart
+    @OneToOne(() => Cart, (cart) => cart.order) 
+    @JoinColumn()
+    cart: Cart;
+
 }

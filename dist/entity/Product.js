@@ -35,12 +35,6 @@ __decorate([
     (0, typeorm_1.Column)({
         nullable: true
     }),
-    __metadata("design:type", Number)
-], Product.prototype, "quantity", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        nullable: true
-    }),
     __metadata("design:type", String)
 ], Product.prototype, "desription", void 0);
 __decorate([
@@ -64,7 +58,6 @@ __decorate([
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     }),
-    (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", Order_1.Order)
 ], Product.prototype, "order", void 0);
 Product = __decorate([

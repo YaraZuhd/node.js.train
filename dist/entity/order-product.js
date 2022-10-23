@@ -9,54 +9,43 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Cart = void 0;
+exports.OrderProduct = void 0;
 const typeorm_1 = require("typeorm");
 const Order_1 = require("./Order");
-const orderItems_1 = require("./orderItems");
-let Cart = class Cart extends typeorm_1.BaseEntity {
+let OrderProduct = class OrderProduct extends typeorm_1.BaseEntity {
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Cart.prototype, "id", void 0);
+], OrderProduct.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         nullable: true,
     }),
     __metadata("design:type", Number)
-], Cart.prototype, "quentity", void 0);
+], OrderProduct.prototype, "quentity", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         nullable: true,
     }),
     __metadata("design:type", Number)
-], Cart.prototype, "price", void 0);
-__decorate([
-    (0, typeorm_1.Column)({
-        nullable: true
-    }),
-    __metadata("design:type", String)
-], Cart.prototype, "status", void 0);
+], OrderProduct.prototype, "price", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
-], Cart.prototype, "createdAt", void 0);
+], OrderProduct.prototype, "createdAt", void 0);
 __decorate([
     (0, typeorm_1.UpdateDateColumn)(),
     __metadata("design:type", Date)
-], Cart.prototype, "updatedAt", void 0);
+], OrderProduct.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => Order_1.Order, (order) => order.cart),
-    __metadata("design:type", Order_1.Order)
-], Cart.prototype, "order", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => orderItems_1.OrderItems, (items) => items.cart, {
+    (0, typeorm_1.OneToMany)(() => Order_1.Order, (items) => items.cart, {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE'
     }),
     __metadata("design:type", Array)
-], Cart.prototype, "items", void 0);
-Cart = __decorate([
+], OrderProduct.prototype, "items", void 0);
+OrderProduct = __decorate([
     (0, typeorm_1.Entity)()
-], Cart);
-exports.Cart = Cart;
+], OrderProduct);
+exports.OrderProduct = OrderProduct;

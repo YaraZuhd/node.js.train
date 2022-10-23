@@ -51,6 +51,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
             const cart = new Cart_1.Cart();
             cart.quentity = 0;
+            cart.status = "Empty";
             yield cart.save();
             let user = new User_1.User();
             user.password = req.body.password;

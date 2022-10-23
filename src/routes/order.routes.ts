@@ -17,7 +17,7 @@ router.get("/order/:id",[checkJwt, checkRole(["admin", "product admin", "user"])
 
 router.post("/order", [checkJwt, checkRole(["admin", "product admin","user"])], createOrder);
 
-router.put("/order/:id",[checkJwt, checkRole(["admin", "product admin","user"])], updateOrder);
+router.put("/order/:id",[checkJwt, checkRole(["admin"])], updateOrder);
 
 router.delete("/order/:id",[checkJwt, checkRole(["admin", "product admin","user"])], deleteOrder);
 

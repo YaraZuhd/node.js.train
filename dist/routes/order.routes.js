@@ -8,6 +8,6 @@ const router = (0, express_1.Router)();
 router.get("/orders", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], order_controller_1.getOrders);
 router.get("/order/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], order_controller_1.getOrder);
 router.post("/order", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], order_controller_1.createOrder);
-router.put("/order/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], order_controller_1.updateOrder);
+router.put("/order/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], order_controller_1.updateOrder);
 router.delete("/order/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], order_controller_1.deleteOrder);
 exports.default = router;

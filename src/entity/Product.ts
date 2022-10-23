@@ -8,10 +8,11 @@ import {
     ManyToMany,
     UpdateDateColumn,
     ManyToOne,
-    JoinColumn,
   } from "typeorm";
+import { Cart } from "./Cart";
 import { Category } from "./Category";
 import { Order } from "./Order";
+import { OrderItems } from "./orderItems";
 
   
   @Entity()
@@ -28,11 +29,6 @@ import { Order } from "./Order";
       nullable : true
     })
     price: number;
-
-    @Column({
-      nullable : true
-    })
-    quantity: number;
   
     @Column({
       nullable : true
@@ -57,7 +53,13 @@ import { Order } from "./Order";
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
     })
-    @JoinColumn()
     order: Order;
+
+
+    // @ManyToOne(() => Order, {
+    //   onDelete: 'CASCADE',
+    //   onUpdate: 'CASCADE'
+    // })
+    // orderItems: OrderItems;
 
 }

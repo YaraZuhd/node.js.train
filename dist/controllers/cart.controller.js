@@ -8,13 +8,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletecartItems = exports.getCurrentUserCart = exports.getCart = exports.getCarts = void 0;
+exports.addProductToCart = exports.deletecartItems = exports.getCurrentUserCart = exports.getCart = exports.getCarts = void 0;
 const Cart_1 = require("../entity/Cart");
+const orderItems_1 = require("../entity/orderItems");
+const Product_1 = require("../entity/Product");
 const User_1 = require("../entity/User");
+const cartSchema_1 = __importDefault(require("../schemas/cartSchema "));
 const getCarts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const cart = yield Cart_1.Cart.find({ relations: ['orders'] });
+        const cart = yield Cart_1.Cart.find({ relations: ['items'] });
         return res.json(cart);
     }
     catch (error) {
@@ -27,7 +33,7 @@ exports.getCarts = getCarts;
 const getCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const cart = yield Cart_1.Cart.findOne({ where: { id: parseInt(id) }, relations: ['orders'] });
+        const cart = yield Cart_1.Cart.findOne({ where: { id: parseInt(id) }, relations: ['items'] });
         if (!cart)
             return res.status(404).json({ message: "Cart not found" });
         return res.json(cart);
@@ -44,7 +50,7 @@ const getCurrentUserCart = (_, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         const user = yield User_1.User.findOne({ where: { id: parseInt(id) }, relations: ['cart'] });
         if (user != null) {
-            const cart = yield Cart_1.Cart.findOne({ where: { id: user.cart.id }, relations: ['orders'] });
+            const cart = yield Cart_1.Cart.findOne({ where: { id: user.cart.id }, relations: ['items'] });
             return res.json(cart);
         }
     }
@@ -56,11 +62,14 @@ const getCurrentUserCart = (_, res) => __awaiter(void 0, void 0, void 0, functio
 });
 exports.getCurrentUserCart = getCurrentUserCart;
 const deletecartItems = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    const id = res.locals.jwtPayload.userId;
     try {
-        const cart = yield Cart_1.Cart.findOne({ where: { id: parseInt(id) }, relations: ['orders'] });
+        const cart = yield Cart_1.Cart.findOne({ where: { id: parseInt(id) }, relations: ['items'] });
         if (cart != null) {
-            cart.orders = [];
+            cart.items = [];
+            cart.quentity = 0;
+            cart.price = 0;
+            cart.status = "Empty";
             yield cart.save();
             return res.status(204).json({ message: "Deleted Successfuly" });
         }
@@ -75,30 +84,47 @@ const deletecartItems = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.deletecartItems = deletecartItems;
-//   export const updateCartItems = async (req: Request, res: Response) => {
-//     const { id } = req.params;
-//     try {
-//       const cart = await Cart.findOne({where : {id : parseInt(id)}, relations : ['orders']}) ;
-//       if(cart != null){
-//         for(let i = 0; i< cart.orders.length; i++){
-//            if(req.body.orders[i].id == cart.orders[i].id){
-//                 cart.quentity = cart.quentity - req.body.orders[i].totalQuentities;
-//                 cart.price = cart.price - req.body.orders[i].totalPrice;
-//                 cart.orders = cart.orders.filter((element) => {
-//                     return element !== req.body.orders[i];
-//                 });
-//                 console.log(cart.orders);
-//                 console.log(cart);
-//                 await cart.save();
-//            }
-//         }
-//         return res.status(204).json({message : "Updated Successfuly"});
-//       }else{
-//         return res.status(400).json({message : 'Cart is Empty'});
-//       } 
-//     } catch (error) {
-//       if (error instanceof Error) {
-//         return res.status(500).json({ message: error.message });
-//       }
-//     }
-//   };
+const addProductToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    const id = res.locals.jwtPayload.userId;
+    try {
+        const cart = yield Cart_1.Cart.findOne({ where: { id: parseInt(id) }, relations: ['items'] });
+        const items = new orderItems_1.OrderItems();
+        const validate = cartSchema_1.default.validate(req.body);
+        if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
+            if (cart != null && items != null) {
+                let Qsum = 0;
+                let Psum = 0;
+                for (let i = 0; i < req.body.items.length; i++) {
+                    const product = yield Product_1.Product.findOne({ where: { id: parseInt(req.body.items[i].id) }, relations: ['categories'] });
+                    if (!product)
+                        return res.status(404).json({ message: "Product not found" });
+                    if (product != null) {
+                        Qsum = Qsum + parseInt(req.body.items[i].quantity);
+                        Psum = Psum + parseInt(req.body.items[i].quantity) * product.price;
+                    }
+                    cart.items.push(req.body.items[i]);
+                }
+                cart.quentity = cart.quentity + Qsum;
+                cart.price = cart.price + Psum;
+                cart.status = "Pending";
+                yield cart.save();
+                items.id = cart.id;
+                items.quantity = cart.quentity;
+                items.cart = cart;
+                yield items.save();
+                console.log(items);
+            }
+            return res.json(cart);
+        }
+        else {
+            return res.json({ message: validate.error.message });
+        }
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+});
+exports.addProductToCart = addProductToCart;

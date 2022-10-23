@@ -5,9 +5,11 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     PrimaryGeneratedColumn,
-    OneToMany
+    OneToMany,
+    OneToOne
   } from "typeorm";
 import { Order } from "./Order";
+import { OrderItems } from "./orderItems";
   
   @Entity()
   export class Cart extends BaseEntity {
@@ -24,17 +26,25 @@ import { Order } from "./Order";
     })
     price: number;
 
+    @Column({
+      nullable : true
+    })
+    status : String;
+
     @CreateDateColumn()
     createdAt: Date;
 
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @OneToMany(() => Order, (orders)=>orders.cart, {
+    @OneToOne(() => Order, (order) => order.cart) 
+    order: Order;
+
+    @OneToMany(() => OrderItems, (items)=>items.cart, {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'
-  })
-    orders: Order[];
+    })
+    items: OrderItems[];
 
   }
 

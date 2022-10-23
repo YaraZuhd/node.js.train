@@ -38,12 +38,14 @@ export const createUser = async (
     if(!validate.error?.message){
       const cart = new Cart();
       cart.quentity = 0;
+      cart.status = "Empty"
       await cart.save();
       let user = new User();
       user.password= req.body.password
       user.hashpassword();
       user = await User.create({ ...req.body, ...user}) 
       user.cart = cart;
+      
       await user.save();
       return res.json(user);
     }else{

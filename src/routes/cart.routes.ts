@@ -3,7 +3,8 @@ import {
   getCart,
   getCarts,
   getCurrentUserCart,
-  deletecartItems
+  deletecartItems,
+  addProductToCart
 } from "../controllers/cart.controller";
 import { checkJwt } from "../middlewares/checkJwt";
 import { checkRole } from "../middlewares/checkRole";
@@ -16,8 +17,8 @@ router.get("/cart/:id",[checkJwt, checkRole(["admin"])], getCart);
 
 router.get("/me",[checkJwt], getCurrentUserCart);
 
-router.delete("/cart/:id",[checkJwt, checkRole(["admin"])], deletecartItems);
+router.delete("/delete-cart-items",[checkJwt, checkRole(["admin", "product admin", "user"])], deletecartItems);
 
-//router.put("/cart/:id",[checkJwt, checkRole(["admin"])], updateCartItems);
+router.put("/add-product-to-cart",[checkJwt, checkRole(["admin", "product admin", "user"])], addProductToCart);
 
 export default router;
