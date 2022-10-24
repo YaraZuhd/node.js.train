@@ -89,7 +89,7 @@ const addProductToCart = (req, res) => __awaiter(void 0, void 0, void 0, functio
     const id = res.locals.jwtPayload.userId;
     try {
         const cart = yield Cart_1.Cart.findOne({ where: { id: parseInt(id) }, relations: ['items'] });
-        const items = new orderItems_1.OrderItems();
+        let items = new orderItems_1.OrderItems();
         const validate = cartSchema_1.default.validate(req.body);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
             if (cart != null && items != null) {
@@ -109,11 +109,13 @@ const addProductToCart = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 cart.price = cart.price + Psum;
                 cart.status = "Pending";
                 yield cart.save();
-                items.id = cart.id;
-                items.quantity = cart.quentity;
+                console.log(req.body.items);
+                items.quantity = Qsum;
+                items.cID = cart.id;
+                items.price = Psum;
                 items.cart = cart;
+                items = yield orderItems_1.OrderItems.create(Object.assign({}, items));
                 yield items.save();
-                console.log(items);
             }
             return res.json(cart);
         }

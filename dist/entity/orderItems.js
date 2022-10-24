@@ -17,10 +17,11 @@ let OrderItems = class OrderItems extends typeorm_1.BaseEntity {
     constructor() {
         super(...arguments);
         this.quantity = 0;
+        this.price = 0;
     }
 };
 __decorate([
-    (0, typeorm_1.PrimaryColumn)(),
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
 ], OrderItems.prototype, "id", void 0);
 __decorate([
@@ -37,6 +38,18 @@ __decorate([
     }),
     __metadata("design:type", Number)
 ], OrderItems.prototype, "quantity", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        nullable: true
+    }),
+    __metadata("design:type", Number)
+], OrderItems.prototype, "price", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        nullable: true
+    }),
+    __metadata("design:type", Number)
+], OrderItems.prototype, "cID", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => Cart_1.Cart, {
         nullable: true,

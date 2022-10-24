@@ -10,7 +10,7 @@ const ProductSchema = joi_1.default.object().keys({
 });
 const CartSchema = joi_1.default.object().keys({
     id: joi_1.default.number(),
-    status: joi_1.default.string(),
+    status: joi_1.default.string().valid('Pending', 'Empty'),
     items: joi_1.default.array().items(ProductSchema).required()
 });
 exports.default = CartSchema;

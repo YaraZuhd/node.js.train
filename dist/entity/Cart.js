@@ -14,6 +14,11 @@ const typeorm_1 = require("typeorm");
 const Order_1 = require("./Order");
 const orderItems_1 = require("./orderItems");
 let Cart = class Cart extends typeorm_1.BaseEntity {
+    constructor() {
+        super(...arguments);
+        this.quentity = 0;
+        this.price = 0;
+    }
 };
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
@@ -46,9 +51,12 @@ __decorate([
     __metadata("design:type", Date)
 ], Cart.prototype, "updatedAt", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => Order_1.Order, (order) => order.cart),
+    (0, typeorm_1.OneToMany)(() => Order_1.Order, (orders) => orders.cart, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    }),
     __metadata("design:type", Order_1.Order)
-], Cart.prototype, "order", void 0);
+], Cart.prototype, "orders", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => orderItems_1.OrderItems, (items) => items.cart, {
         onDelete: 'CASCADE',

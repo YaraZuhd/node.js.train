@@ -45,7 +45,6 @@ export const createUser = async (
       user.hashpassword();
       user = await User.create({ ...req.body, ...user}) 
       user.cart = cart;
-      
       await user.save();
       return res.json(user);
     }else{

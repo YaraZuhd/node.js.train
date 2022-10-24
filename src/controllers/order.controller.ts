@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { Cart } from "../entity/Cart";
 import { Order } from "../entity/Order";
 import { OrderItems } from "../entity/orderItems";
-import { Product } from "../entity/Product";
 import { User } from "../entity/User";
 import OrderSchema from "../schemas/orderSchema";
 
@@ -39,39 +38,33 @@ export const createOrder = async (
   try{
     const validate = OrderSchema.validate(req.body);
     if(!validate.error?.message){
-      let order = new Order();
-      const user = await User.findOne({where : { id: parseInt(res.locals.jwtPayload.userId) }, relations: ['cart']});
-      if (user != null && order != null){
+       let order = new Order();
+       const user = await User.findOne({where : {id : parseInt(res.locals.jwtPayload.userId)},relations : ['orders', 'cart']});
+       const cart = await Cart.findOne({where: {id : user.cart.id}, relations : ['items']});
+       const orderItems = await OrderItems.find({where: {cID : user.cart.id}, relations : ['order', 'cart']})
+       if( user != null && cart != null && orderItems != null){
+        order.totalPrice = cart.price;
+        order.totalQuentities = cart.quentity;
+        cart.quentity = 0;
+        cart.price = 0;
+        cart.status = "Empty";
+        cart.items = [];
+        await cart.save();
+        user.cart = cart;
+        await user.save();
         order.user = user;
-        const cart = await Cart.findOne({where : {id : user.cart.id}, relations : ['items']});
-        if(cart != null){
-           const orderItems = await OrderItems.findOne({where: {id : user.cart.id}, relations : ['order', 'cart']});
-           console.log(orderItems);
-           if(orderItems != null){
-            console.log("hi");
-              order.totalPrice = cart.price;
-              order.totalQuentities = cart.quentity;
-              orderItems.order = order;
-              console.log(orderItems);
-              //orderItems.cart = null;
-              await OrderItems.update({ id: cart.id }, orderItems);
-           }
-           console.log(order, orderItems);
-          cart.order = order;
-          cart.quentity = 0;
-          cart.price = 0;
-          cart.status = "Empty";
-          await cart.save();
-          // const orders = [order];
-          // Object.assign(user, orders);
-          user.orders.push(order);
-          await user.save();
-          order.cart = cart;
-        }
-       order = await Order.create({ ...req.body, ...order});
-       console.log(order);
-       await order.save();
-      }
+        order.cart = cart;
+        order = await Order.create({ ...req.body, ...order});
+        await order.save();
+        for(let i =0; i< orderItems.length;i++){
+          orderItems[i].cart.id = null;
+          orderItems[i].cID = null;
+          orderItems[i].order = order;
+          await orderItems[i].save();
+        }   
+        user.orders.push(order);
+        await user.save();
+       }
       return res.json(order);
     }else{
       return res.json({message : validate.error.message})
@@ -90,11 +83,8 @@ export const updateOrder = async (req: Request, res: Response) => {
     if (!order) return res.status(404).json({ message: "Order not found" });
     const validate = OrderSchema.validate(req.body);
     if(!validate.error?.message){
-      if(order != null){
-        order.status = req.body.status;
-      }
-      await order.save();
-      return res.sendStatus(204).json(order);
+      await Order.update({id : parseInt(id)}, req.body)
+      return res.sendStatus(204);
     }else{
       return res.json({message : validate.error.message})
     }       

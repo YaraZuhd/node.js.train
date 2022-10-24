@@ -7,7 +7,7 @@ const joi_1 = __importDefault(require("joi"));
 const OrderSchema = joi_1.default.object().keys({
     id: joi_1.default.number(),
     totalPrice: joi_1.default.number(),
-    name: joi_1.default.string().required(),
+    name: joi_1.default.string(),
     totalQuentities: joi_1.default.number(),
     status: joi_1.default.string()
 });

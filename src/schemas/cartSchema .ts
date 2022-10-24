@@ -8,7 +8,7 @@ const ProductSchema =  Joi.object().keys({
 
 const CartSchema =  Joi.object().keys({ 
       id: Joi.number(),
-      status : Joi.string(),
+      status : Joi.string().valid('Pending', 'Empty'),
       items : Joi.array().items(ProductSchema).required()
 });
 

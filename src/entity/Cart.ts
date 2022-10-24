@@ -5,8 +5,7 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     PrimaryGeneratedColumn,
-    OneToMany,
-    OneToOne
+    OneToMany
   } from "typeorm";
 import { Order } from "./Order";
 import { OrderItems } from "./orderItems";
@@ -19,12 +18,12 @@ import { OrderItems } from "./orderItems";
     @Column({
       nullable : true,
     })
-    quentity: number;
+    quentity: number = 0;
 
     @Column({
       nullable : true,
     })
-    price: number;
+    price: number = 0;
 
     @Column({
       nullable : true
@@ -37,9 +36,11 @@ import { OrderItems } from "./orderItems";
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @OneToOne(() => Order, (order) => order.cart) 
-    order: Order;
-
+    @OneToMany(() => Order, (orders)=>orders.cart, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    }) 
+    orders: Order;
     @OneToMany(() => OrderItems, (items)=>items.cart, {
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE'

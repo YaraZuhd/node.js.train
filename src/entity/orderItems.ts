@@ -12,7 +12,7 @@ import { Order } from "./Order";
   
   @Entity()
   export class OrderItems extends BaseEntity {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id: number;
 
     @ManyToOne(() => Order, {
@@ -26,6 +26,16 @@ import { Order } from "./Order";
         nullable : true
     })
     quantity : number = 0;
+
+    @Column({
+      nullable : true
+   })
+    price : number = 0;
+
+    @Column({
+      nullable : true
+   })
+    cID : number;
 
 
     @ManyToOne(() => Cart, {

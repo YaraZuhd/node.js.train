@@ -51,37 +51,31 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const validate = orderSchema_1.default.validate(req.body);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
             let order = new Order_1.Order();
-            const user = yield User_1.User.findOne({ where: { id: parseInt(res.locals.jwtPayload.userId) }, relations: ['cart'] });
-            if (user != null && order != null) {
+            const user = yield User_1.User.findOne({ where: { id: parseInt(res.locals.jwtPayload.userId) }, relations: ['orders', 'cart'] });
+            const cart = yield Cart_1.Cart.findOne({ where: { id: user.cart.id }, relations: ['items'] });
+            const orderItems = yield orderItems_1.OrderItems.find({ where: { cID: user.cart.id }, relations: ['order', 'cart'] });
+            if (user != null && cart != null && orderItems != null) {
+                order.totalPrice = cart.price;
+                order.totalQuentities = cart.quentity;
+                cart.quentity = 0;
+                cart.price = 0;
+                cart.status = "Empty";
+                cart.items = [];
+                yield cart.save();
+                user.cart = cart;
+                yield user.save();
                 order.user = user;
-                const cart = yield Cart_1.Cart.findOne({ where: { id: user.cart.id }, relations: ['items'] });
-                if (cart != null) {
-                    const orderItems = yield orderItems_1.OrderItems.findOne({ where: { id: user.cart.id }, relations: ['order', 'cart'] });
-                    console.log(orderItems);
-                    if (orderItems != null) {
-                        console.log("hi");
-                        order.totalPrice = cart.price;
-                        order.totalQuentities = cart.quentity;
-                        orderItems.order = order;
-                        console.log(orderItems);
-                        //orderItems.cart = null;
-                        yield orderItems_1.OrderItems.update({ id: cart.id }, orderItems);
-                    }
-                    console.log(order, orderItems);
-                    cart.order = order;
-                    cart.quentity = 0;
-                    cart.price = 0;
-                    cart.status = "Empty";
-                    yield cart.save();
-                    // const orders = [order];
-                    // Object.assign(user, orders);
-                    user.orders.push(order);
-                    yield user.save();
-                    order.cart = cart;
-                }
+                order.cart = cart;
                 order = yield Order_1.Order.create(Object.assign(Object.assign({}, req.body), order));
-                console.log(order);
                 yield order.save();
+                for (let i = 0; i < orderItems.length; i++) {
+                    orderItems[i].cart.id = null;
+                    orderItems[i].cID = null;
+                    orderItems[i].order = order;
+                    yield orderItems[i].save();
+                }
+                user.orders.push(order);
+                yield user.save();
             }
             return res.json(order);
         }
@@ -105,11 +99,8 @@ const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             return res.status(404).json({ message: "Order not found" });
         const validate = orderSchema_1.default.validate(req.body);
         if (!((_b = validate.error) === null || _b === void 0 ? void 0 : _b.message)) {
-            if (order != null) {
-                order.status = req.body.status;
-            }
-            yield order.save();
-            return res.sendStatus(204).json(order);
+            yield Order_1.Order.update({ id: parseInt(id) }, req.body);
+            return res.sendStatus(204);
         }
         else {
             return res.json({ message: validate.error.message });

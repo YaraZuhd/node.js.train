@@ -61,7 +61,10 @@ __decorate([
     __metadata("design:type", Array)
 ], Order.prototype, "items", void 0);
 __decorate([
-    (0, typeorm_1.OneToOne)(() => Cart_1.Cart, (cart) => cart.order),
+    (0, typeorm_1.ManyToOne)(() => Cart_1.Cart, (cart) => cart.orders, {
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    }),
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", Cart_1.Cart)
 ], Order.prototype, "cart", void 0);

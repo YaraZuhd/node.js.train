@@ -47,7 +47,10 @@ import { User } from "./User";
     })
     items: OrderItems[];
 
-    @OneToOne(() => Cart, (cart) => cart.order) 
+    @ManyToOne(() => Cart, (cart) => cart.orders,{
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    })
     @JoinColumn()
     cart: Cart;
 
