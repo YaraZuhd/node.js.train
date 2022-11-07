@@ -20,7 +20,6 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     var _a;
     try {
         const validate = userSchema_1.default.validate(req.body);
-        console.log(validate);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
             const cart = new Cart_1.Cart();
             cart.quentity = 0;
@@ -31,7 +30,6 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             user.hashpassword();
             user = yield User_1.User.create(Object.assign(Object.assign({}, req.body), user));
             user.cart = cart;
-            console.log(user);
             yield user.save();
             return res.json(user);
         }

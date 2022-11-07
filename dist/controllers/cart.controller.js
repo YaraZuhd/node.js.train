@@ -109,7 +109,6 @@ const addProductToCart = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 cart.price = cart.price + Psum;
                 cart.status = "Pending";
                 yield cart.save();
-                console.log(req.body.items);
                 items.quantity = Qsum;
                 items.cID = cart.id;
                 items.price = Psum;

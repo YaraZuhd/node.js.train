@@ -54,8 +54,8 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 res.status(401).send({ message: "Password Not Match" });
                 return;
             }
-            //Sing JWT, valid for 1 hour
-            const token = jwt.sign({ userId: user.id, email: user.email }, secretkey_1.default.jwtSecret, { expiresIn: "5h" });
+            //Sing JWT, valid for 1 day
+            const token = jwt.sign({ userId: user.id, email: user.email }, secretkey_1.default.jwtSecret, { expiresIn: "24h" });
             res.send(token);
         }
         else {

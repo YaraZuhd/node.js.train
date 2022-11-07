@@ -20,7 +20,6 @@ export const getUser = async (req: Request, res: Response) => {
     const user = await User.findOne({ where : {id : parseInt(id)} , relations : ['cart' ,'orders']});
     
     if (!user) return res.status(404).json({ message: "User not found" });
-    console.log(id, user);
     return res.json(user);
   } catch (error) {
     if (error instanceof Error) {
@@ -94,10 +93,8 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 export const getCurrentUser = async (req: Request, res: Response) => {
   const id = res.locals.jwtPayload.userId;
-  //console.log(id);
   try {
     const user = await User.findOne({ where : {id : parseInt(id)} , relations : ['cart' ,'orders']});
-    //console.log(user);
     return res.json(user);
   } catch (error) {
     if (error instanceof Error) {

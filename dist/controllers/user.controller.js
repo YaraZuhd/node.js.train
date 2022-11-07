@@ -34,7 +34,6 @@ const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const user = yield User_1.User.findOne({ where: { id: parseInt(id) }, relations: ['cart', 'orders'] });
         if (!user)
             return res.status(404).json({ message: "User not found" });
-        console.log(id, user);
         return res.json(user);
     }
     catch (error) {
@@ -112,10 +111,8 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.deleteUser = deleteUser;
 const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = res.locals.jwtPayload.userId;
-    //console.log(id);
     try {
         const user = yield User_1.User.findOne({ where: { id: parseInt(id) }, relations: ['cart', 'orders'] });
-        //console.log(user);
         return res.json(user);
     }
     catch (error) {

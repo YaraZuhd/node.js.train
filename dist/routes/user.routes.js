@@ -8,7 +8,7 @@ const router = (0, express_1.Router)();
 router.get("/", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], user_controller_1.getUsers);
 router.get("/user/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], user_controller_1.getUser);
 router.get("/me", [checkJwt_1.checkJwt], user_controller_1.getCurrentUser);
-router.post("/user", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], user_controller_1.createUser);
+router.post("/", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], user_controller_1.createUser);
 router.put("/user/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], user_controller_1.updateUser);
 router.delete("/user/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], user_controller_1.deleteUser);
 exports.default = router;

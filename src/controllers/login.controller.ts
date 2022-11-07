@@ -19,11 +19,11 @@ export const loginUser = async (req: Request, res: Response) => {
             res.status(401).send({message : "Password Not Match"});
             return;
         }
-          //Sing JWT, valid for 1 hour
+          //Sing JWT, valid for 1 day
         const token = jwt.sign(
             { userId: user.id, email: user.email },
             jwtSecret.jwtSecret,
-            { expiresIn: "5h" }
+            { expiresIn: "24h" }
         );
         res.send(token);
     }else{

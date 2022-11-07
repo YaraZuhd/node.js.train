@@ -90,7 +90,6 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
           cart.price = cart.price + Psum;
           cart.status = "Pending";
           await cart.save();
-          console.log(req.body.items);
           items.quantity = Qsum;
           items.cID = cart.id;
           items.price = Psum;
