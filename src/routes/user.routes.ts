@@ -18,7 +18,7 @@ router.get("/user/:id",[checkJwt, checkRole(["admin"])], getUser);
 
 router.get("/me",[checkJwt], getCurrentUser);
 
-router.post("/user", [checkJwt, checkRole(["admin"])], createUser);
+router.post("/", [checkJwt, checkRole(["admin"])], createUser);
 
 router.put("/user/:id",[checkJwt, checkRole(["admin"])], updateUser);
 

@@ -15,7 +15,7 @@ router.get("/", [checkJwt, checkRole(["admin", "product admin" , "user"])],getCa
 
 router.get("/category/:id",[checkJwt, checkRole(["admin", "product admin", "user"])], getCategory);
 
-router.post("/category", [checkJwt, checkRole(["admin", "product admin"])], createCategory);
+router.post("/", [checkJwt, checkRole(["admin", "product admin"])], createCategory);
 
 router.put("/category/:id",[checkJwt, checkRole(["admin", "product admin"])], updateCategory);
 
