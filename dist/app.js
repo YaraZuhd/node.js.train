@@ -47,6 +47,6 @@ app.use("/login", login_routes_1.default);
 app.use("/signup", register_routes_1.default);
 app.use("/products", product_routes_1.default);
 app.use("/categories", category_routes_1.default);
-app.use("/order", order_routes_1.default);
-app.use("/cart", cart_routes_1.default);
+app.use("/orders", order_routes_1.default);
+app.use("/carts", cart_routes_1.default);
 exports.default = app;

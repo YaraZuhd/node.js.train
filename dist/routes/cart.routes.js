@@ -5,7 +5,7 @@ const cart_controller_1 = require("../controllers/cart.controller");
 const checkJwt_1 = require("../middlewares/checkJwt");
 const checkRole_1 = require("../middlewares/checkRole");
 const router = (0, express_1.Router)();
-router.get("/carts", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], cart_controller_1.getCarts);
+router.get("/", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], cart_controller_1.getCarts);
 router.get("/cart/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], cart_controller_1.getCart);
 router.get("/me", [checkJwt_1.checkJwt], cart_controller_1.getCurrentUserCart);
 router.delete("/delete-cart-items", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], cart_controller_1.deletecartItems);
