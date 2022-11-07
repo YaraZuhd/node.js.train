@@ -11,7 +11,7 @@ import { checkRole } from "../middlewares/checkRole";
 
 const router = Router();
 
-router.get("/products", [checkJwt, checkRole(["admin", "product admin" , "user"])],getProducts);
+router.get("/", [checkJwt, checkRole(["admin", "product admin" , "user"])],getProducts);
 
 router.get("/product/:id",[checkJwt, checkRole(["admin", "product admin", "user"])], getProduct);
 

@@ -26,8 +26,8 @@ app.use("/login", loginRoutes);
 app.use("/signup", registerRoutes);
 app.use("/products", productRoutes);
 app.use("/categories", categoryRoutes);
-app.use("/order",orderRoutes);
-app.use("/cart",cartRoutes);
+app.use("/orders",orderRoutes);
+app.use("/carts",cartRoutes);
 
 
 
