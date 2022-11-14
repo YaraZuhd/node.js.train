@@ -31,7 +31,7 @@ export const loginUser = async (req: Request, res: Response) => {
     }
   //Send the jwt in the response
    } catch (error) {
-     res.status(404).send({message : "User Not Found"});
+     res.sendStatus(404).send({message : "User Not Found"});
    }
 
 };
