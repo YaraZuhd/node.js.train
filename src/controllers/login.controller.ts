@@ -27,11 +27,11 @@ export const loginUser = async (req: Request, res: Response) => {
         );
         res.send(token);
     }else{
-       res.send(404).send({message : "User is null"})
+       res.status(404).send({message : "User is null"})
     }
   //Send the jwt in the response
    } catch (error) {
-     res.sendStatus(404).send({message : "User Not Found"});
+     res.status(404).send({message : "User Not Found"});
    }
 
 };
