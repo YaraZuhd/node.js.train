@@ -8,7 +8,7 @@ const userDetail =  Joi.object().keys({
       phone : Joi.string().required(),
       email : Joi.string().email().required(),
       password: Joi.string().required(),
-      address : Joi.string(),
+      address : Joi.string().required(),
       role : Joi.string().valid('user', 'admin', 'product admin'),
 });
 

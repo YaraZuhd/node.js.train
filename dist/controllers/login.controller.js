@@ -59,7 +59,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             res.send(token);
         }
         else {
-            res.send(404).send({ message: "User is null" });
+            res.status(404).send({ message: "User is null" });
         }
         //Send the jwt in the response
     }
