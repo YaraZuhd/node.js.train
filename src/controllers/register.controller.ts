@@ -6,6 +6,8 @@ import { Cart } from "../entity/Cart";
 export const registerUser = async (req: Request, res: Response) => {
     try{
         const validate = userDetail.validate(req.body);
+        console.log(validate);
+        console.log(validate.error.details[0].message);
         if(!validate.error?.message){
         const cart = new Cart();
         cart.quentity = 0;
@@ -19,7 +21,7 @@ export const registerUser = async (req: Request, res: Response) => {
         await user.save();
         return res.json(user);
         }else{
-        return res.json({message : validate.error.message})
+        return res.status(400).send(validate.error.details[0].message)
         }
     }catch(error){
         if (error instanceof Error) {
