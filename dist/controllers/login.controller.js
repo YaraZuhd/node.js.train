@@ -43,7 +43,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Check if email and password are set
     let { email, password } = req.body;
     if (!(email && password)) {
-        res.status(400).send();
+        res.status(400).send("Enter Valid Information");
     }
     //Get user from database
     let user;
@@ -51,12 +51,12 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         user = yield User_1.User.findOneBy({ email: email });
         if (user != null) {
             if (!user.validatenonhashpassword(password)) {
-                res.status(401).send({ message: "Password Not Match" });
+                res.status(400).send("Password Not Match");
                 return;
             }
             //Sing JWT, valid for 1 day
             const token = jwt.sign({ userId: user.id, email: user.email }, secretkey_1.default.jwtSecret, { expiresIn: "24h" });
-            res.send(token);
+            res.json({ token: token, user: user });
         }
         else {
             res.status(404).send({ message: "User is null" });

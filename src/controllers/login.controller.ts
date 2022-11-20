@@ -7,7 +7,7 @@ export const loginUser = async (req: Request, res: Response) => {
    //Check if email and password are set
    let { email, password } = req.body;
    if (!(email && password)) {
-     res.status(400).send();
+     res.status(400).send("Enter Valid Information");
    }
 
    //Get user from database
@@ -16,7 +16,7 @@ export const loginUser = async (req: Request, res: Response) => {
      user = await User.findOneBy({ email: email });
      if(user != null){
         if (!user.validatenonhashpassword(password)) {
-            res.status(401).send({message : "Password Not Match"});
+            res.status(400).send("Password Not Match");
             return;
         }
           //Sing JWT, valid for 1 day
@@ -25,7 +25,7 @@ export const loginUser = async (req: Request, res: Response) => {
             jwtSecret.jwtSecret,
             { expiresIn: "24h" }
         );
-        res.send(token);
+        res.json({token : token, user: user});
     }else{
        res.status(404).send({message : "User is null"})
     }
