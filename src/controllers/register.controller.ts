@@ -2,12 +2,14 @@ import { Request, Response } from "express";
 import { User } from "../entity/User";
 import userDetail from "../schemas/userSchema";
 import { Cart } from "../entity/Cart";
+import { Console } from "console";
 
 export const registerUser = async (req: Request, res: Response) => {
     try{
+        
         const validate = userDetail.validate(req.body);
-        console.log(validate);
-        console.log(validate.error.details[0].message);
+        // console.log(validate);
+        // console.log(validate.error.details[0].message);
         if(!validate.error?.message){
         const cart = new Cart();
         cart.quentity = 0;
