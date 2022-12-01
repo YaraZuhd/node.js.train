@@ -20,8 +20,6 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     var _a;
     try {
         const validate = userSchema_1.default.validate(req.body);
-        // console.log(validate);
-        // console.log(validate.error.details[0].message);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
             const cart = new Cart_1.Cart();
             cart.quentity = 0;

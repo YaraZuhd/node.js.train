@@ -8,8 +8,6 @@ export const registerUser = async (req: Request, res: Response) => {
     try{
         
         const validate = userDetail.validate(req.body);
-        // console.log(validate);
-        // console.log(validate.error.details[0].message);
         if(!validate.error?.message){
         const cart = new Cart();
         cart.quentity = 0;

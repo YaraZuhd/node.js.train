@@ -90,12 +90,15 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
           cart.price = cart.price + Psum;
           cart.status = "Pending";
           await cart.save();
+          console.log(cart);
           items.quantity = Qsum;
+          items.productName = req.body.productName;
           items.cID = cart.id;
           items.price = Psum;
           items.cart = cart;
           items = await OrderItems.create({ ...items});
           await items.save();
+          console.log(items.productName);
       }
       return res.json(cart);
      }else{

@@ -109,12 +109,15 @@ const addProductToCart = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 cart.price = cart.price + Psum;
                 cart.status = "Pending";
                 yield cart.save();
+                console.log(cart);
                 items.quantity = Qsum;
+                items.productName = req.body.productName;
                 items.cID = cart.id;
                 items.price = Psum;
                 items.cart = cart;
                 items = yield orderItems_1.OrderItems.create(Object.assign({}, items));
                 yield items.save();
+                console.log(items.productName);
             }
             return res.json(cart);
         }

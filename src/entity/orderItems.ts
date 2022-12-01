@@ -34,6 +34,11 @@ import { Order } from "./Order";
 
     @Column({
       nullable : true
+    })
+    productName : string;
+
+    @Column({
+      nullable : true
    })
     cID : number;
 
