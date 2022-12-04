@@ -87,6 +87,7 @@ exports.deletecartItems = deletecartItems;
 const addProductToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const id = res.locals.jwtPayload.userId;
+    console.log(req.body);
     try {
         const cart = yield Cart_1.Cart.findOne({ where: { id: parseInt(id) }, relations: ['items'] });
         let items = new orderItems_1.OrderItems();
@@ -102,6 +103,7 @@ const addProductToCart = (req, res) => __awaiter(void 0, void 0, void 0, functio
                     if (product != null) {
                         Qsum = Qsum + parseInt(req.body.items[i].quantity);
                         Psum = Psum + parseInt(req.body.items[i].quantity) * product.price;
+                        // items.productName = req.body.items[i].productName;
                     }
                     cart.items.push(req.body.items[i]);
                 }
@@ -111,13 +113,14 @@ const addProductToCart = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 yield cart.save();
                 console.log(cart);
                 items.quantity = Qsum;
-                items.productName = req.body.productName;
+                items.productName = req.body.items.productName;
+                console.log(items);
                 items.cID = cart.id;
                 items.price = Psum;
                 items.cart = cart;
                 items = yield orderItems_1.OrderItems.create(Object.assign({}, items));
                 yield items.save();
-                console.log(items.productName);
+                console.log(items);
             }
             return res.json(cart);
         }

@@ -69,6 +69,7 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
 
   export const addProductToCart = async (req: Request, res: Response) => {
     const id = res.locals.jwtPayload.userId;
+    console.log(req.body);
     try {
      const cart = await Cart.findOne({where : {id : parseInt(id)}, relations : ['items']});
      let items = new OrderItems();
@@ -83,6 +84,7 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
             if(product != null){
                 Qsum = Qsum + parseInt(req.body.items[i].quantity);
                 Psum = Psum + parseInt(req.body.items[i].quantity)* product.price;
+                // items.productName = req.body.items[i].productName;
               }
             cart.items.push(req.body.items[i]);
           }
@@ -92,13 +94,14 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
           await cart.save();
           console.log(cart);
           items.quantity = Qsum;
-          items.productName = req.body.productName;
+          items.productName = req.body.items.productName;
+          console.log(items);
           items.cID = cart.id;
           items.price = Psum;
           items.cart = cart;
           items = await OrderItems.create({ ...items});
           await items.save();
-          console.log(items.productName);
+          console.log(items);
       }
       return res.json(cart);
      }else{
