@@ -9,5 +9,7 @@ router.get("/", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], ca
 router.get("/cart/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin"])], cart_controller_1.getCart);
 router.get("/me", [checkJwt_1.checkJwt], cart_controller_1.getCurrentUserCart);
 router.delete("/delete-cart-items", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], cart_controller_1.deletecartItems);
+router.delete("/delete-cart-item/:productId", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], cart_controller_1.deletecartItem);
+router.put("/update-cart-item/:productId", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], cart_controller_1.updateCartItem);
 router.put("/add-product-to-cart", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], cart_controller_1.addProductToCart);
 exports.default = router;

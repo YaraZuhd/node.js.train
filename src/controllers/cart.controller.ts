@@ -3,7 +3,7 @@ import { Cart } from "../entity/Cart";
 import { OrderItems } from "../entity/orderItems";
 import { Product } from "../entity/Product";
 import { User } from "../entity/User";
-import CartSchema from "../schemas/cartSchema ";
+import CartSchema , {UpdateCartSchema} from "../schemas/cartSchema ";
 
 export const getCarts = async (req: Request, res: Response) => {
   try {
@@ -56,10 +56,65 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
         cart.price = 0;
         cart.status = "Empty";
         await cart.save();
-        return res.status(204).json({message : "Deleted Successfuly"});
+        return res.json(cart);
       }else{
         return res.status(400).json({message : 'Cart is Empty'});
       } 
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(500).json({ message: error.message });
+      }
+    }
+  };
+
+  export const deletecartItem = async (req: Request, res: Response) => {
+    const id = res.locals.jwtPayload.userId;
+    const proId = +req.params.productId;
+    try {
+      const cart = await Cart.findOne({where : {id : parseInt(id)}, relations : ['items']}) ;
+      if(cart != null){
+        const oldCartItem =cart.items.find(({productId}) => productId == proId);
+        console.log(oldCartItem);
+       cart.quentity = cart.quentity - oldCartItem.quantity;
+       cart.price = cart.price - oldCartItem.price;
+        cart.items = cart.items.map((item)=>{
+          if(item.productId != proId){
+            return item
+          }
+        });
+        await cart.save();
+        console.log(cart);
+        return res.json(cart);
+      }else{
+        return res.status(400).json({message : 'Cart is Empty'});
+      } 
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(500).json({ message: error.message });
+      }
+    }
+  };
+
+
+  export const updateCartItem = async (req: Request, res: Response) => {
+    const id = res.locals.jwtPayload.userId;
+    const proId = +req.params.productId;
+     console.log(proId);
+    try {
+      const cart = await Cart.findOne({where : {id : parseInt(id)}, relations : ['items']}) ;
+      const validate = UpdateCartSchema.validate(req.body);
+      console.log(validate);
+      if(!validate.error?.message){
+        const oldCartItem = cart.items.map((item) => {
+          if(item.productId != proId){
+            return item
+          }
+        });
+        console.log(oldCartItem.length);
+        console.log()
+      }else{
+        return res.json({message : validate.error.message})
+      }
     } catch (error) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -72,10 +127,25 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
     console.log(req.body);
     try {
      const cart = await Cart.findOne({where : {id : parseInt(id)}, relations : ['items']});
+     //const user = await User.findOne({where : {id : parseInt(res.locals.jwtPayload.userId)},relations : ['orders', 'cart']});
      let items = new OrderItems();
+    //  let items = await OrderItems.find({where: {cID : user.cart.id}, relations : ['order', 'cart']});
      const validate = CartSchema.validate(req.body);
      if(!validate.error?.message){
       if(cart != null && items != null) {
+        // let cartContainProduct = false;
+        // for(let i = 0; cart.items.length; i ++){
+        //    if(cart.items[i].productId == req.body.item[0].id){
+        //     cartContainProduct = true;
+        //    }
+        // }
+        // let cartItems; 
+        // console.log(cartContainProduct);
+        // if(cartContainProduct){
+        //   cartItems = await OrderItems.find({where: {cID : user.cart.id}});
+        //   console.log(cartItems)
+        // }
+        // let items = new OrderItems();
           let Qsum = 0;
           let Psum = 0;
           for(let i = 0; i< req.body.items.length; i++){
@@ -84,7 +154,8 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
             if(product != null){
                 Qsum = Qsum + parseInt(req.body.items[i].quantity);
                 Psum = Psum + parseInt(req.body.items[i].quantity)* product.price;
-                // items.productName = req.body.items[i].productName;
+                items.productName = req.body.items[i].productName;
+                items.productId = req.body.items[i].id;
               }
             cart.items.push(req.body.items[i]);
           }
@@ -94,7 +165,6 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
           await cart.save();
           console.log(cart);
           items.quantity = Qsum;
-          items.productName = req.body.items.productName;
           console.log(items);
           items.cID = cart.id;
           items.price = Psum;

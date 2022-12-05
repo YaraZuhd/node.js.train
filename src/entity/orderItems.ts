@@ -34,6 +34,11 @@ import { Order } from "./Order";
 
     @Column({
       nullable : true
+   })
+    productId : number ;
+
+    @Column({
+      nullable : true
     })
     productName : string;
 
@@ -47,10 +52,6 @@ import { Order } from "./Order";
         nullable : true,
     })
     cart: Cart;
-
-    
-
-
 
   }
 
