@@ -77,11 +77,12 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
         console.log(oldCartItem);
        cart.quentity = cart.quentity - oldCartItem.quantity;
        cart.price = cart.price - oldCartItem.price;
-        cart.items = cart.items.map((item)=>{
+        cart.items = cart.items.filter((item)=>{
           if(item.productId != proId){
             return item
           }
         });
+        console.log(cart.items);
         await cart.save();
         console.log(cart);
         return res.json(cart);
@@ -105,13 +106,7 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
       const validate = UpdateCartSchema.validate(req.body);
       console.log(validate);
       if(!validate.error?.message){
-        const oldCartItem = cart.items.map((item) => {
-          if(item.productId != proId){
-            return item
-          }
-        });
-        console.log(oldCartItem.length);
-        console.log()
+        // const oldCartItem = cart.items;
       }else{
         return res.json({message : validate.error.message})
       }
@@ -127,28 +122,14 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
     console.log(req.body);
     try {
      const cart = await Cart.findOne({where : {id : parseInt(id)}, relations : ['items']});
-     //const user = await User.findOne({where : {id : parseInt(res.locals.jwtPayload.userId)},relations : ['orders', 'cart']});
      let items = new OrderItems();
-    //  let items = await OrderItems.find({where: {cID : user.cart.id}, relations : ['order', 'cart']});
      const validate = CartSchema.validate(req.body);
      if(!validate.error?.message){
       if(cart != null && items != null) {
-        // let cartContainProduct = false;
-        // for(let i = 0; cart.items.length; i ++){
-        //    if(cart.items[i].productId == req.body.item[0].id){
-        //     cartContainProduct = true;
-        //    }
-        // }
-        // let cartItems; 
-        // console.log(cartContainProduct);
-        // if(cartContainProduct){
-        //   cartItems = await OrderItems.find({where: {cID : user.cart.id}});
-        //   console.log(cartItems)
-        // }
-        // let items = new OrderItems();
           let Qsum = 0;
           let Psum = 0;
           for(let i = 0; i< req.body.items.length; i++){
+            console.log(cart.items[i]);
             const product = await Product.findOne({ where : {id :parseInt(req.body.items[i].id)}, relations : ['categories']});
             if (!product) return res.status(404).json({ message: "Product not found" });
             if(product != null){

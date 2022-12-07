@@ -114,11 +114,12 @@ const deletecartItem = (req, res) => __awaiter(void 0, void 0, void 0, function*
             console.log(oldCartItem);
             cart.quentity = cart.quentity - oldCartItem.quantity;
             cart.price = cart.price - oldCartItem.price;
-            cart.items = cart.items.map((item) => {
+            cart.items = cart.items.filter((item) => {
                 if (item.productId != proId) {
                     return item;
                 }
             });
+            console.log(cart.items);
             yield cart.save();
             console.log(cart);
             return res.json(cart);
@@ -144,13 +145,7 @@ const updateCartItem = (req, res) => __awaiter(void 0, void 0, void 0, function*
         const validate = cartSchema_1.UpdateCartSchema.validate(req.body);
         console.log(validate);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
-            const oldCartItem = cart.items.map((item) => {
-                if (item.productId != proId) {
-                    return item;
-                }
-            });
-            console.log(oldCartItem.length);
-            console.log();
+            // const oldCartItem = cart.items;
         }
         else {
             return res.json({ message: validate.error.message });
@@ -169,27 +164,14 @@ const addProductToCart = (req, res) => __awaiter(void 0, void 0, void 0, functio
     console.log(req.body);
     try {
         const cart = yield Cart_1.Cart.findOne({ where: { id: parseInt(id) }, relations: ['items'] });
-        const user = yield User_1.User.findOne({ where: { id: parseInt(res.locals.jwtPayload.userId) }, relations: ['orders', 'cart'] });
-        //  let items = await OrderItems.find({where: {cID : user.cart.id}, relations : ['order', 'cart']});
+        let items = new orderItems_1.OrderItems();
         const validate = cartSchema_1.default.validate(req.body);
         if (!((_b = validate.error) === null || _b === void 0 ? void 0 : _b.message)) {
-            if (cart != null) {
-                let cartContainProduct = false;
-                for (let i = 0; cart.items.length; i++) {
-                    if (cart.items[i].productId == req.body.item[0].id) {
-                        cartContainProduct = true;
-                    }
-                }
-                let cartItems;
-                console.log(cartContainProduct);
-                if (cartContainProduct) {
-                    cartItems = yield orderItems_1.OrderItems.find({ where: { cID: user.cart.id } });
-                    console.log(cartItems);
-                }
-                let items = new orderItems_1.OrderItems();
+            if (cart != null && items != null) {
                 let Qsum = 0;
                 let Psum = 0;
                 for (let i = 0; i < req.body.items.length; i++) {
+                    console.log(cart.items[i]);
                     const product = yield Product_1.Product.findOne({ where: { id: parseInt(req.body.items[i].id) }, relations: ['categories'] });
                     if (!product)
                         return res.status(404).json({ message: "Product not found" });
