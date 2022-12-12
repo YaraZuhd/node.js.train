@@ -142,17 +142,12 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
                 await cart.save();
              }
            //dcrease
-           console.log(parseInt(req.body.items[i].newQuantity) < parseInt(req.body.items[i].oldQuantity))
               if(parseInt(req.body.items[i].newQuantity) < parseInt(req.body.items[i].oldQuantity)){
                 item = await OrderItems.find({where: {id : productItem[0].id}, relations : ['order', 'cart']});
                 Qsum = Qsum + (parseInt(req.body.items[i].oldQuantity) - parseInt(req.body.items[i].newQuantity));
-                console.log(Qsum)
                 item[0].quantity = cart.items[index].quantity - Qsum;
-                console.log(item[0].quantity)
                 Psum = Psum + Qsum * product.price;
-                console.log(Psum)
                 item[0].price = cart.items[index].price - Psum;
-                console.log(item[0].price)
                 await item[0].save();
                 cart.quentity = cart.quentity - Qsum;
                 cart.price = cart.price - Psum;
@@ -165,7 +160,6 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
                 });
                 cart.items[index] = item[0]
                 await cart.save();
-                console.log(cart)
               }
           }
         }
