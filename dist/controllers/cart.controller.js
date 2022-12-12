@@ -139,13 +139,79 @@ const updateCartItem = (req, res) => __awaiter(void 0, void 0, void 0, function*
     var _a;
     const id = res.locals.jwtPayload.userId;
     const proId = +req.params.productId;
-    console.log(proId);
     try {
         const cart = yield Cart_1.Cart.findOne({ where: { id: parseInt(id) }, relations: ['items'] });
+        let item;
+        let productItem = [];
+        let index = 0;
         const validate = cartSchema_1.UpdateCartSchema.validate(req.body);
-        console.log(validate);
         if (!((_a = validate.error) === null || _a === void 0 ? void 0 : _a.message)) {
-            // const oldCartItem = cart.items;
+            if (cart != null) {
+                let Qsum = 0;
+                let Psum = 0;
+                for (let i = 0; i < cart.items.length; i++) {
+                    if (cart.items[i].productId == proId) {
+                        productItem.push(cart.items[i]);
+                        index = i;
+                    }
+                }
+                console.log(req.body, productItem);
+                for (let i = 0; i < req.body.items.length; i++) {
+                    const product = yield Product_1.Product.findOne({ where: { id: proId }, relations: ['categories'] });
+                    if (!product)
+                        return res.status(404).json({ message: "Product not found" });
+                    //increase
+                    if (parseInt(req.body.items[i].newQuantity) > parseInt(req.body.items[i].oldQuantity)) {
+                        item = yield orderItems_1.OrderItems.find({ where: { id: productItem[0].id }, relations: ['order', 'cart'] });
+                        console.log(item);
+                        Qsum = Qsum + (parseInt(req.body.items[i].newQuantity) - parseInt(req.body.items[i].oldQuantity));
+                        item[0].quantity = Qsum + cart.items[index].quantity;
+                        Psum = Psum + Qsum * product.price;
+                        item[0].price = Psum + cart.items[index].price;
+                        yield item[0].save();
+                        cart.quentity = cart.quentity + Qsum;
+                        cart.price = cart.price + Psum;
+                        cart.items.map((ele) => {
+                            if (ele.id == item[0].id) {
+                                return item[0];
+                            }
+                            else {
+                                return ele;
+                            }
+                        });
+                        cart.items[index] = item[0];
+                        yield cart.save();
+                    }
+                    //dcrease
+                    console.log(parseInt(req.body.items[i].newQuantity) < parseInt(req.body.items[i].oldQuantity));
+                    if (parseInt(req.body.items[i].newQuantity) < parseInt(req.body.items[i].oldQuantity)) {
+                        item = yield orderItems_1.OrderItems.find({ where: { id: productItem[0].id }, relations: ['order', 'cart'] });
+                        Qsum = Qsum + (parseInt(req.body.items[i].oldQuantity) - parseInt(req.body.items[i].newQuantity));
+                        console.log(Qsum);
+                        item[0].quantity = cart.items[index].quantity - Qsum;
+                        console.log(item[0].quantity);
+                        Psum = Psum + Qsum * product.price;
+                        console.log(Psum);
+                        item[0].price = cart.items[index].price - Psum;
+                        console.log(item[0].price);
+                        yield item[0].save();
+                        cart.quentity = cart.quentity - Qsum;
+                        cart.price = cart.price - Psum;
+                        cart.items.map((ele) => {
+                            if (ele.id == item[0].id) {
+                                return item[0];
+                            }
+                            else {
+                                return ele;
+                            }
+                        });
+                        cart.items[index] = item[0];
+                        yield cart.save();
+                        console.log(cart);
+                    }
+                }
+            }
+            return res.json(cart);
         }
         else {
             return res.json({ message: validate.error.message });
@@ -161,41 +227,74 @@ exports.updateCartItem = updateCartItem;
 const addProductToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     const id = res.locals.jwtPayload.userId;
-    console.log(req.body);
     try {
         const cart = yield Cart_1.Cart.findOne({ where: { id: parseInt(id) }, relations: ['items'] });
         let items = new orderItems_1.OrderItems();
+        let itemm;
+        let productItem = [];
+        let index = 0;
         const validate = cartSchema_1.default.validate(req.body);
         if (!((_b = validate.error) === null || _b === void 0 ? void 0 : _b.message)) {
             if (cart != null && items != null) {
                 let Qsum = 0;
                 let Psum = 0;
                 for (let i = 0; i < req.body.items.length; i++) {
-                    console.log(cart.items[i]);
                     const product = yield Product_1.Product.findOne({ where: { id: parseInt(req.body.items[i].id) }, relations: ['categories'] });
                     if (!product)
                         return res.status(404).json({ message: "Product not found" });
-                    if (product != null) {
-                        Qsum = Qsum + parseInt(req.body.items[i].quantity);
-                        Psum = Psum + parseInt(req.body.items[i].quantity) * product.price;
-                        items.productName = req.body.items[i].productName;
-                        items.productId = req.body.items[i].id;
+                    if (cart.items.length != 0) {
+                        for (let i = 0; i < cart.items.length; i++) {
+                            if (cart.items[i].productId == product.id) {
+                                productItem.push(cart.items[i]);
+                                index = i;
+                            }
+                        }
                     }
-                    cart.items.push(req.body.items[i]);
+                    if (productItem.length == 0) {
+                        if (product != null) {
+                            Qsum = Qsum + parseInt(req.body.items[i].quantity);
+                            Psum = Psum + parseInt(req.body.items[i].quantity) * product.price;
+                            items.productName = req.body.items[i].productName;
+                            items.productId = req.body.items[i].id;
+                        }
+                        cart.items.push(req.body.items[i]);
+                    }
+                    else {
+                        itemm = yield orderItems_1.OrderItems.find({ where: { id: productItem[0].id }, relations: ['order', 'cart'] });
+                        console.log(itemm);
+                        Qsum = Qsum + parseInt(req.body.items[i].quantity);
+                        itemm[0].quantity = Qsum + cart.items[index].quantity;
+                        Psum = Psum + parseInt(req.body.items[i].quantity) * product.price;
+                        itemm[0].price = Psum + cart.items[index].price;
+                        yield itemm[0].save();
+                    }
                 }
-                cart.quentity = cart.quentity + Qsum;
-                cart.price = cart.price + Psum;
-                cart.status = "Pending";
-                yield cart.save();
-                console.log(cart);
-                items.quantity = Qsum;
-                console.log(items);
-                items.cID = cart.id;
-                items.price = Psum;
-                items.cart = cart;
-                items = yield orderItems_1.OrderItems.create(Object.assign({}, items));
-                yield items.save();
-                console.log(items);
+                if (productItem.length > 0) {
+                    cart.quentity = cart.quentity + Qsum;
+                    cart.price = cart.price + Psum;
+                    cart.items.map((item) => {
+                        if (item.id == itemm[0].id) {
+                            return itemm[0];
+                        }
+                        else {
+                            return item;
+                        }
+                    });
+                    cart.items[index] = itemm[0];
+                    yield cart.save();
+                }
+                if (productItem.length == 0) {
+                    cart.quentity = cart.quentity + Qsum;
+                    cart.price = cart.price + Psum;
+                    cart.status = "Pending";
+                    yield cart.save();
+                    items.quantity = Qsum;
+                    items.cID = cart.id;
+                    items.price = Psum;
+                    items.cart = cart;
+                    items = yield orderItems_1.OrderItems.create(Object.assign({}, items));
+                    yield items.save();
+                }
             }
             return res.json(cart);
         }

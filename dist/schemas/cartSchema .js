@@ -18,11 +18,8 @@ const CartSchema = joi_1.default.object().keys({
 exports.default = CartSchema;
 const ProductInfoSchema = joi_1.default.object().keys({
     id: joi_1.default.number().required(),
-    cID: joi_1.default.number().required(),
-    price: joi_1.default.number().required(),
     newQuantity: joi_1.default.number().required(),
     oldQuantity: joi_1.default.number().required(),
-    productName: joi_1.default.string().required(),
     productId: joi_1.default.number().required()
 });
 exports.UpdateCartSchema = joi_1.default.object().keys({
