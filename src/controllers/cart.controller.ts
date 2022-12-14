@@ -141,7 +141,7 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
                 cart.items[index] = item[0]
                 await cart.save();
              }
-           //dcrease0
+           //dcrease
               if(parseInt(req.body.items[i].newQuantity) < parseInt(req.body.items[i].oldQuantity)){
                 item = await OrderItems.find({where: {id : productItem[0].id}, relations : ['order', 'cart']});
                 Qsum = Qsum + (parseInt(req.body.items[i].oldQuantity) - parseInt(req.body.items[i].newQuantity));
