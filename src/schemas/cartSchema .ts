@@ -4,7 +4,8 @@
 const ProductSchema =  Joi.object().keys({ 
       id: Joi.number().required(),
       quantity : Joi.number().required(),
-      productName: Joi.string().required()
+      productName: Joi.string().required(),
+      productPrice : Joi.number().required()
 });
 
 const CartSchema =  Joi.object().keys({ 
