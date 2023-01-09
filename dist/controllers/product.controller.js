@@ -18,9 +18,9 @@ const productSchema_1 = __importDefault(require("../schemas/productSchema"));
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const product = yield Product_1.Product.find({ relations: ["categories"] });
-        const page = +req.query.page || 1;
-        const limit = +req.query.limit;
-        if (!Number.isNaN(page) && !Number.isNaN(limit)) {
+        const page = +req.query.page;
+        if (!Number.isNaN(page)) {
+            const limit = 3;
             const startIndex = (page - 1) * limit;
             const endIndex = page * limit;
             const results = {};

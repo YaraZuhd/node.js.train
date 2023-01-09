@@ -22,9 +22,9 @@ type Results = {
 export const getProducts = async (req: Request, res: Response) => {
   try {
     const product = await Product.find({ relations: ["categories"] });
-    const page = +req.query.page || 1;
-    const limit = +req.query.limit;
-    if (!Number.isNaN(page) && !Number.isNaN(limit)) {
+    const page = +req.query.page;
+    if (!Number.isNaN(page)) {
+      const limit = 3;
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
       const  results = {} as Results;
