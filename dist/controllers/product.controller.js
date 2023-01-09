@@ -17,8 +17,34 @@ const Product_1 = require("../entity/Product");
 const productSchema_1 = __importDefault(require("../schemas/productSchema"));
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const product = yield Product_1.Product.find({ relations: ['categories'] });
-        return res.json(product);
+        const product = yield Product_1.Product.find({ relations: ["categories"] });
+        const page = +req.query.page;
+        const limit = +req.query.limit;
+        if (!Number.isNaN(page) && !Number.isNaN(limit)) {
+            const startIndex = (page - 1) * limit;
+            const endIndex = page * limit;
+            const results = {};
+            if (startIndex > 0) {
+                // results = {
+                //   previous : {page : page -1 , limit:limit}
+                // }
+                results.previous = { page: page - 1, limit: limit };
+            }
+            if (endIndex < product.length) {
+                // results = {
+                //   next : {page : page+1, limit : limit}
+                // }
+                results.next = { page: page + 1, limit: limit };
+            }
+            // results = {
+            //   products : product.slice(startIndex, endIndex)
+            // }
+            results.products = product.slice(startIndex, endIndex);
+            return res.json(results);
+        }
+        else {
+            return res.json(product);
+        }
     }
     catch (error) {
         if (error instanceof Error) {
@@ -30,7 +56,10 @@ exports.getProducts = getProducts;
 const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const product = yield Product_1.Product.findOne({ where: { id: parseInt(id) }, relations: ['categories'] });
+        const product = yield Product_1.Product.findOne({
+            where: { id: parseInt(id) },
+            relations: ["categories"],
+        });
         if (!product)
             return res.status(404).json({ message: "Product not found" });
         return res.json(product);
