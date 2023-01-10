@@ -18,6 +18,8 @@ type Results = {
   products: Product[];
 }
 
+let FilterdProducts: Product[] =  [];
+
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
@@ -39,6 +41,74 @@ export const getProducts = async (req: Request, res: Response) => {
     } else {
       return res.json(product);
     }
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+};
+
+
+export const getFilterdProducts = async (req: Request, res: Response) => {
+  try {
+    const product = await Product.find({ relations: ["categories"] });
+    const page = +req.query.page;
+    if (!Number.isNaN(page)) {
+      const limit = 6;
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+      const  results = {} as Results;
+      if(startIndex > 0){
+        results.previous = {page : page -1 , limit:limit};
+      }
+      if(endIndex < product.length){
+         results.next = {page : page+1, limit : limit};
+      }
+      results.products = product.slice(startIndex, endIndex);
+      return res.json(results);
+    } else {
+      return res.json(product);
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+};
+
+export const filterProducts = async (req: Request, res: Response) => {
+  try {
+    const product = await Product.find({ relations: ["categories"] });
+    FilterdProducts = []
+     if(req.body.categorie !== ""){
+      if(req.body.categorie == "Show All"){
+        for (let i = 0; i < product.length; i++) {
+          FilterdProducts.push(product[i]);
+        }
+        return res.json(FilterdProducts);
+      }else{
+            for (let i = 0; i < product.length; i++) {
+              for (let j = 0; j < product[i].categories.length; j++) {
+                if (
+                  product[i].categories[j].name.toLowerCase() ===
+                  req.body.categorie.toLowerCase()
+                ) {
+                  FilterdProducts.push(product[i]);
+                }
+              }
+            }
+            return res.json(FilterdProducts);
+      }
+     }else if (req.body.product !== ""){
+      for (let i = 0; i < product.length; i++) {
+        if (
+          product[i].name.toLowerCase().includes(req.body.product.toLowerCase())
+        ) {
+          FilterdProducts.push(product[i]);
+        }
+      }
+      return res.json(FilterdProducts);
+     }
   } catch (error) {
     if (error instanceof Error) {
       return res.status(500).json({ message: error.message });
@@ -85,7 +155,6 @@ export const createProduct = async (req: Request, res: Response) => {
 
 export const updateProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
-
   try {
     const product = await Product.findOneBy({ id: parseInt(id) });
     if (!product) return res.status(404).json({ message: "Product not found" });

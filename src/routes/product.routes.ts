@@ -4,7 +4,9 @@ import {
     getProduct,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    filterProducts,
+    getFilterdProducts
 } from "../controllers/product.controller";
 import { checkJwt } from "../middlewares/checkJwt";
 import { checkRole } from "../middlewares/checkRole";
@@ -12,6 +14,10 @@ import { checkRole } from "../middlewares/checkRole";
 const router = Router();
 
 router.get("/", [checkJwt, checkRole(["admin", "product admin" , "user"])],getProducts);
+
+router.post("/filter-Products/", [checkJwt, checkRole(["admin", "product admin" , "user"])],filterProducts);
+
+router.get("/filter-Products/", [checkJwt, checkRole(["admin", "product admin" , "user"])],getFilterdProducts);
 
 router.get("/product/:id",[checkJwt, checkRole(["admin", "product admin", "user"])], getProduct);
 

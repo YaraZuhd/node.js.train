@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProduct = exports.getProducts = void 0;
+exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProduct = exports.filterProducts = exports.getProducts = void 0;
 const Product_1 = require("../entity/Product");
 const productSchema_1 = __importDefault(require("../schemas/productSchema"));
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -44,6 +44,47 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getProducts = getProducts;
+const filterProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(req.body);
+        const filterdProducts = [];
+        const product = yield Product_1.Product.find({ relations: ["categories"] });
+        if (req.body.categorie !== "") {
+            if (req.body.categorie == "Show All") {
+                for (let i = 0; i < product.length; i++) {
+                    filterdProducts.push(product[i]);
+                }
+                return res.json(filterdProducts);
+            }
+            else {
+                for (let i = 0; i < product.length; i++) {
+                    for (let j = 0; j < product[i].categories.length; j++) {
+                        if (product[i].categories[j].name.toLowerCase() ===
+                            req.body.categorie.toLowerCase()) {
+                            filterdProducts.push(product[i]);
+                        }
+                    }
+                }
+                return res.json(filterdProducts);
+            }
+        }
+        else if (req.body.product !== "") {
+            const filterdProducts = [];
+            for (let i = 0; i < product.length; i++) {
+                if (product[i].name.toLowerCase().includes(req.body.product.toLowerCase())) {
+                    filterdProducts.push(product[i]);
+                }
+            }
+            return res.json(filterdProducts);
+        }
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+});
+exports.filterProducts = filterProducts;
 const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
