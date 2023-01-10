@@ -24,7 +24,7 @@ export const getProducts = async (req: Request, res: Response) => {
     const product = await Product.find({ relations: ["categories"] });
     const page = +req.query.page;
     if (!Number.isNaN(page)) {
-      const limit = 3;
+      const limit = 6;
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
       const  results = {} as Results;

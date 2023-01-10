@@ -20,7 +20,7 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const product = yield Product_1.Product.find({ relations: ["categories"] });
         const page = +req.query.page;
         if (!Number.isNaN(page)) {
-            const limit = 3;
+            const limit = 6;
             const startIndex = (page - 1) * limit;
             const endIndex = page * limit;
             const results = {};
