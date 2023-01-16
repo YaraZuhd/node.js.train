@@ -7,6 +7,7 @@ const checkRole_1 = require("../middlewares/checkRole");
 const router = (0, express_1.Router)();
 router.get("/", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], product_controller_1.getProducts);
 router.post("/filter-Products/", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], product_controller_1.filterProducts);
+router.get("/filter-Products/", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], product_controller_1.getFilterdProducts);
 router.get("/product/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin", "user"])], product_controller_1.getProduct);
 router.post("/", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin"])], product_controller_1.createProduct);
 router.put("/product/:id", [checkJwt_1.checkJwt, (0, checkRole_1.checkRole)(["admin", "product admin"])], product_controller_1.updateProduct);

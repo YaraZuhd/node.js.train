@@ -12,23 +12,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProduct = exports.filterProducts = exports.getProducts = void 0;
+exports.deleteProduct = exports.updateProduct = exports.createProduct = exports.getProduct = exports.filterProducts = exports.getFilterdProducts = exports.getProducts = void 0;
 const Product_1 = require("../entity/Product");
 const productSchema_1 = __importDefault(require("../schemas/productSchema"));
+let FilterdProducts = [];
+const LIMIT = 6;
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const product = yield Product_1.Product.find({ relations: ["categories"] });
         const page = +req.query.page;
         if (!Number.isNaN(page)) {
-            const limit = 6;
-            const startIndex = (page - 1) * limit;
-            const endIndex = page * limit;
+            const startIndex = (page - 1) * LIMIT;
+            const endIndex = page * LIMIT;
             const results = {};
             if (startIndex > 0) {
-                results.previous = { page: page - 1, limit: limit };
+                results.previous = { page: page - 1, limit: LIMIT };
             }
             if (endIndex < product.length) {
-                results.next = { page: page + 1, limit: limit };
+                results.next = { page: page + 1, limit: LIMIT };
             }
             results.products = product.slice(startIndex, endIndex);
             return res.json(results);
@@ -44,38 +45,62 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getProducts = getProducts;
+const getFilterdProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const product = yield Product_1.Product.find({ relations: ["categories"] });
+        const page = +req.query.page;
+        if (!Number.isNaN(page)) {
+            const startIndex = (page - 1) * LIMIT;
+            const endIndex = page * LIMIT;
+            const results = {};
+            if (startIndex > 0) {
+                results.previous = { page: page - 1, limit: LIMIT };
+            }
+            if (endIndex < product.length) {
+                results.next = { page: page + 1, limit: LIMIT };
+            }
+            results.products = product.slice(startIndex, endIndex);
+            console.log(results);
+            return res.json(results);
+        }
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+});
+exports.getFilterdProducts = getFilterdProducts;
 const filterProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.body);
-        const filterdProducts = [];
         const product = yield Product_1.Product.find({ relations: ["categories"] });
+        FilterdProducts = [];
         if (req.body.categorie !== "") {
             if (req.body.categorie == "Show All") {
                 for (let i = 0; i < product.length; i++) {
-                    filterdProducts.push(product[i]);
+                    FilterdProducts.push(product[i]);
                 }
-                return res.json(filterdProducts);
+                return res.json(FilterdProducts);
             }
             else {
                 for (let i = 0; i < product.length; i++) {
                     for (let j = 0; j < product[i].categories.length; j++) {
                         if (product[i].categories[j].name.toLowerCase() ===
                             req.body.categorie.toLowerCase()) {
-                            filterdProducts.push(product[i]);
+                            FilterdProducts.push(product[i]);
                         }
                     }
                 }
-                return res.json(filterdProducts);
+                return res.json(FilterdProducts);
             }
         }
         else if (req.body.product !== "") {
-            const filterdProducts = [];
             for (let i = 0; i < product.length; i++) {
                 if (product[i].name.toLowerCase().includes(req.body.product.toLowerCase())) {
-                    filterdProducts.push(product[i]);
+                    FilterdProducts.push(product[i]);
                 }
             }
-            return res.json(filterdProducts);
+            return res.json(FilterdProducts);
         }
     }
     catch (error) {

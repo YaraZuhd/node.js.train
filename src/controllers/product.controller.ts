@@ -20,21 +20,22 @@ type Results = {
 
 let FilterdProducts: Product[] =  [];
 
+const LIMIT:number = 6
+
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
     const product = await Product.find({ relations: ["categories"] });
     const page = +req.query.page;
     if (!Number.isNaN(page)) {
-      const limit = 6;
-      const startIndex = (page - 1) * limit;
-      const endIndex = page * limit;
+      const startIndex = (page - 1) * LIMIT;
+      const endIndex = page * LIMIT;
       const  results = {} as Results;
       if(startIndex > 0){
-        results.previous = {page : page -1 , limit:limit};
+        results.previous = {page : page -1 , limit:LIMIT};
       }
       if(endIndex < product.length){
-         results.next = {page : page+1, limit : limit};
+         results.next = {page : page+1, limit : LIMIT};
       }
       results.products = product.slice(startIndex, endIndex);
       return res.json(results);
@@ -54,21 +55,19 @@ export const getFilterdProducts = async (req: Request, res: Response) => {
     const product = await Product.find({ relations: ["categories"] });
     const page = +req.query.page;
     if (!Number.isNaN(page)) {
-      const limit = 6;
-      const startIndex = (page - 1) * limit;
-      const endIndex = page * limit;
+      const startIndex = (page - 1) * LIMIT;
+      const endIndex = page * LIMIT;
       const  results = {} as Results;
       if(startIndex > 0){
-        results.previous = {page : page -1 , limit:limit};
+        results.previous = {page : page -1 , limit:LIMIT};
       }
       if(endIndex < product.length){
-         results.next = {page : page+1, limit : limit};
+         results.next = {page : page+1, limit : LIMIT};
       }
       results.products = product.slice(startIndex, endIndex);
+      console.log(results);
       return res.json(results);
-    } else {
-      return res.json(product);
-    }
+    } 
   } catch (error) {
     if (error instanceof Error) {
       return res.status(500).json({ message: error.message });
