@@ -47,9 +47,11 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
   };
 
   export const deletecartItems = async (req: Request, res: Response) => {
-    const id = res.locals.jwtPayload.userId;
+    const userId = res.locals.jwtPayload.userId;
     try {
-      const cart = await Cart.findOne({where : {id : parseInt(id)}, relations : ['items']}) ;
+      const user = await User.findOne({ where: { id: parseInt(userId) }, relations: ['cart'] });
+      if (!user) return res.status(404).json({ message: 'User not found' });
+      const cart = await Cart.findOne({where : {id : user.cart.id}, relations : ['items']}) ;
       if(cart != null){
         cart.items = [];
         cart.quentity = 0;
@@ -68,10 +70,12 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
   };
 
   export const deletecartItem = async (req: Request, res: Response) => {
-    const id = res.locals.jwtPayload.userId;
+    const userId = res.locals.jwtPayload.userId;
     const proId = +req.params.productId;
     try {
-      const cart = await Cart.findOne({where : {id : parseInt(id)}, relations : ['items']}) ;
+      const user = await User.findOne({ where: { id: parseInt(userId) }, relations: ['cart'] });
+      if (!user) return res.status(404).json({ message: 'User not found' });
+      const cart = await Cart.findOne({where : {id : user.cart.id}, relations : ['items']}) ;
       if(cart != null){
         const oldCartItem =cart.items.find(({productId}) => productId == proId);
         console.log(oldCartItem);
@@ -98,10 +102,12 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
 
 
   export const updateCartItem = async (req: Request, res: Response) => {
-    const id = res.locals.jwtPayload.userId;
+    const userId = res.locals.jwtPayload.userId;
     const proId = +req.params.productId;
     try {
-      const cart = await Cart.findOne({where : {id : parseInt(id)}, relations : ['items']}) ;
+      const user = await User.findOne({ where: { id: parseInt(userId) }, relations: ['cart'] });
+      if (!user) return res.status(404).json({ message: 'User not found' });
+      const cart = await Cart.findOne({where : {id : user.cart.id}, relations : ['items']}) ;
       let item: OrderItems[];
       let productItem = [];
       let index = 0;
@@ -175,9 +181,11 @@ export const getCurrentUserCart = async (_: Request, res: Response) => {
   };
 
   export const addProductToCart = async (req: Request, res: Response) => {
-    const id = res.locals.jwtPayload.userId;
+    const userId = res.locals.jwtPayload.userId;
     try {
-     const cart = await Cart.findOne({where : {id : parseInt(id)}, relations : ['items']});
+     const currentUser = await User.findOne({ where: { id: parseInt(userId) }, relations: ['cart'] });
+     if (!currentUser) return res.status(404).json({ message: 'User not found' });
+     const cart = await Cart.findOne({where : {id : currentUser.cart.id}, relations : ['items']});
      let items = new OrderItems();
      let itemm: OrderItems[];
      let productItem = [];
