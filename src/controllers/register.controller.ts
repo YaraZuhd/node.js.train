@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { User } from "../entity/User";
 import userDetail from "../schemas/userSchema";
 import { Cart } from "../entity/Cart";
-import { Console } from "console";
 
 export const registerUser = async (req: Request, res: Response) => {
     try{

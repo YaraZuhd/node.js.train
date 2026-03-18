@@ -18,8 +18,6 @@ type Results = {
   products: Product[];
 }
 
-let FilterdProducts: Product[] =  [];
-
 const LIMIT:number = 6
 
 
@@ -78,7 +76,7 @@ export const getFilterdProducts = async (req: Request, res: Response) => {
 export const filterProducts = async (req: Request, res: Response) => {
   try {
     const product = await Product.find({ relations: ["categories"] });
-    FilterdProducts = []
+    const FilterdProducts: Product[] = [];
      if(req.body.categorie !== ""){
       if(req.body.categorie == "Show All"){
         for (let i = 0; i < product.length; i++) {
